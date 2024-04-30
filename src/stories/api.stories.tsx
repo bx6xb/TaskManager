@@ -5,11 +5,11 @@ export default {
   title: "api",
 }
 
-export const GetTodolistsExample = () => {
+export const fetchTodolistsExample = () => {
   const [state, setState] = useState<any>(null)
 
   useEffect(() => {
-    todolistAPI.getTodolists().then((res) => setState(res.data))
+    todolistAPI.fetchTodolists().then((res) => setState(res.data))
   }, [])
 
   return <div>{JSON.stringify(state)}</div>
@@ -95,12 +95,12 @@ export const UpdateTodolistExample = () => {
   )
 }
 
-export const GetTasksExample = () => {
+export const fetchTasksExample = () => {
   const [state, setState] = useState<any>(null)
   const [todolistId, setTodolistId] = useState<string>("")
 
-  const getTasksHandler = () => {
-    tasksAPI.getTasks(todolistId).then((res) => setState(res.data))
+  const fetchTasksHandler = () => {
+    tasksAPI.fetchTasks(todolistId).then((res) => setState(res.data))
   }
 
   return (
@@ -112,7 +112,7 @@ export const GetTasksExample = () => {
         placeholder="todolist id"
       />
       <br />
-      <button onClick={getTasksHandler}>Get tasks</button>
+      <button onClick={fetchTasksHandler}>Get tasks</button>
       <br />
       <div>{JSON.stringify(state)}</div>
     </div>
@@ -189,23 +189,25 @@ export const UpdateTaskTitleExample = () => {
   const [taskId, setTaskId] = useState<string>("")
   const [taskTitle, setTaskTitle] = useState<string>("")
 
-  const updateTaskTitleHandler = () => {
-    tasksAPI.getTasks(todolistId).then((res) => {
-      const { description, status, priority, startDate, deadline } = res.data.items.find(
-        (t) => t.id === taskId
-      )!
+  const updateTaskTitleHandler = async () => {
+    // fetch tasks for using data
+    const fetchingTasksResponse = await tasksAPI.fetchTasks(todolistId)
 
-      tasksAPI
-        .updateTask(todolistId, taskId, {
-          title: taskTitle,
-          description,
-          status,
-          priority,
-          startDate,
-          deadline,
-        })
-        .then((res) => setState(res.data))
+    // get necessary properties
+    const { description, status, priority, startDate, deadline } =
+      fetchingTasksResponse.data.items.find((t) => t.id === taskId)!
+
+    // updating task
+    const updatingTaskResponse = await tasksAPI.updateTask(todolistId, taskId, {
+      title: taskTitle,
+      description,
+      status,
+      priority,
+      startDate,
+      deadline,
     })
+
+    setState(updatingTaskResponse.data)
   }
 
   return (

@@ -7,7 +7,7 @@ const instance = axios.create({
 
 // api
 export const todolistAPI = {
-  getTodolists() {
+  fetchTodolists() {
     return instance.get<TododlistDomainType[]>("todo-lists")
   },
   createTodolist(title: string) {
@@ -22,8 +22,8 @@ export const todolistAPI = {
 }
 
 export const tasksAPI = {
-  getTasks(todolistId: string, count?: string, page?: string) {
-    return instance.get<GetTasksResponse>(`todo-lists/${todolistId}/tasks`)
+  fetchTasks(todolistId: string, count?: string, page?: string) {
+    return instance.get<fetchTasksResponse>(`todo-lists/${todolistId}/tasks`)
   },
   createTask(todolistId: string, taskTitle: string) {
     return instance.post<ResponseType<{ item: TaskDomainType }>>(`todo-lists/${todolistId}/tasks`, {
@@ -66,7 +66,7 @@ export type TaskDomainType = {
   deadline: null | string
   addedDate: string
 }
-export type GetTasksResponse = {
+export type fetchTasksResponse = {
   items: TaskDomainType[]
   totalCount: number
   error: string
