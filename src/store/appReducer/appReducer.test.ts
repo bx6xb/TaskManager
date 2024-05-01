@@ -2,7 +2,7 @@ import {
   AppStateType,
   appReducer,
   setErrorAC,
-  setIsAuthorizedAC,
+  setIsAppInitializedAC,
   setIsLoadingAC,
 } from "./appReducer"
 
@@ -12,7 +12,7 @@ beforeEach(() => {
   startState = {
     isLoading: false,
     error: "",
-    isAuthorized: false,
+    isAppInitialized: false,
   }
 })
 
@@ -30,9 +30,9 @@ test("error value should be changed", () => {
   expect(newState).not.toBe(startState)
   expect(newState.error).toBe(errorText)
 })
-test("isAuthorized value should be changed", () => {
-  const newState = appReducer(startState, setIsAuthorizedAC(true))
+test("isAppInitialized value should be changed", () => {
+  const newState = appReducer(startState, setIsAppInitializedAC(true))
 
   expect(newState).not.toBe(startState)
-  expect(newState.isAuthorized).toBe(true)
+  expect(newState.isAppInitialized).toBe(true)
 })

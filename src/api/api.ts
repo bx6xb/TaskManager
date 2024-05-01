@@ -10,13 +10,8 @@ export const authAPI = {
   me() {
     return instance.get<ResponseType<UserDomainType>>("auth/me")
   },
-  login(email: string, password: string, rememberMe?: boolean, captcha?: string) {
-    return instance.post<ResponseType<{ userId: number }>>("auth/login", {
-      email,
-      password,
-      rememberMe,
-      captcha,
-    })
+  login(data: LoginDataType) {
+    return instance.post<ResponseType<{ userId: number }>>("auth/login", data)
   },
   logout() {
     return instance.delete<ResponseType>("auth/login")
@@ -111,4 +106,10 @@ export enum TaskPriorities {
   Hi = 2,
   Urgently = 3,
   Later = 4,
+}
+export type LoginDataType = {
+  email: string
+  password: string
+  rememberMe?: boolean
+  captcha?: string
 }
