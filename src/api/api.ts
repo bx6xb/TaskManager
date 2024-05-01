@@ -6,6 +6,22 @@ const instance = axios.create({
 })
 
 // api
+export const authAPI = {
+  me() {
+    return instance.get<ResponseType<UserDomainType>>("auth/me")
+  },
+  login(email: string, password: string, rememberMe?: boolean, captcha?: string) {
+    return instance.post<ResponseType<{ userId: number }>>("auth/login", {
+      email,
+      password,
+      rememberMe,
+      captcha,
+    })
+  },
+  logout() {
+    return instance.delete<ResponseType>("auth/login")
+  },
+}
 export const todolistAPI = {
   fetchTodolists() {
     return instance.get<TododlistDomainType[]>("todo-lists")
@@ -20,7 +36,6 @@ export const todolistAPI = {
     return instance.put<ResponseType>(`todo-lists/${todolistId}`, { title: todolistTitle })
   },
 }
-
 export const tasksAPI = {
   fetchTasks(todolistId: string, count?: string, page?: string) {
     return instance.get<fetchTasksResponse>(`todo-lists/${todolistId}/tasks`)
@@ -78,4 +93,9 @@ export type UpdateTaskDataType = {
   priority: number
   startDate: null | string
   deadline: null | string
+}
+export type UserDomainType = {
+  id: number
+  email: string
+  login: string
 }
