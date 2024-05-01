@@ -1,10 +1,10 @@
 import { ResponseType } from "../api/api"
-import { setErrorAC } from "../redux/appReducer/appReducer"
-import { DispatchType } from "../redux/store"
+import { setErrorAC } from "../store/appReducer/appReducer"
+import { DispatchType } from "../store/store"
 
 export const networkErrorHandler = (dispatch: DispatchType, errorMessage: string) => {
   dispatch(setErrorAC(errorMessage))
 }
-export const serverErrorHandler = (dispatch: DispatchType, data: ResponseType) => {
-  dispatch(setErrorAC(data.messages[0]))
+export const serverErrorHandler = (dispatch: DispatchType, errorMessage: string) => {
+  dispatch(setErrorAC(errorMessage))
 }

@@ -1,6 +1,6 @@
 import { TododlistDomainType } from "../../api/api"
 import {
-  TodolistEntityType,
+  TodolistStateEntityType,
   createTodolistAC,
   deleteTodolistAC,
   setTodolistsAC,
@@ -8,7 +8,7 @@ import {
   updateTodolistTitleAC,
 } from "./todolistReducer"
 
-const todolistsDomain: TododlistDomainType[] = [
+export const todolistsDomain: TododlistDomainType[] = [
   {
     addedDate: "",
     id: "todolistId1",
@@ -23,7 +23,7 @@ const todolistsDomain: TododlistDomainType[] = [
   },
 ]
 
-const todolistsEntity: TodolistEntityType[] = [
+const todolistsEntity: TodolistStateEntityType[] = [
   {
     addedDate: "",
     id: "todolistId1",

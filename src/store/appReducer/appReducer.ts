@@ -19,6 +19,11 @@ export const appReducer = (
         ...state,
         error: action.error,
       }
+    case "app/SET_IS_AUTHORIZED":
+      return {
+        ...state,
+        isAuthorized: action.isAuthorized,
+      }
     default:
       return state
   }
@@ -49,7 +54,7 @@ export const authTC = (): ThunkType => async (dispatch) => {
     if (response.data.resultCode === 0) {
       dispatch(setIsAuthorizedAC(true))
     } else {
-      serverErrorHandler(dispatch, response.data)
+      serverErrorHandler(dispatch, response.data.messages[0])
     }
   } catch (e: any) {
     networkErrorHandler(dispatch, e.message)
@@ -65,7 +70,7 @@ export const login =
       if (response.data.resultCode === 0) {
         dispatch(setIsAuthorizedAC(true))
       } else {
-        serverErrorHandler(dispatch, response.data)
+        serverErrorHandler(dispatch, response.data.messages[0])
       }
     } catch (e: any) {
       networkErrorHandler(dispatch, e.message)
@@ -79,7 +84,7 @@ export const logout = (): ThunkType => async (dispatch) => {
     if (response.data.resultCode === 0) {
       dispatch(setIsAuthorizedAC(false))
     } else {
-      serverErrorHandler(dispatch, response.data)
+      serverErrorHandler(dispatch, response.data.messages[0])
     }
   } catch (e: any) {
     networkErrorHandler(dispatch, e.message)

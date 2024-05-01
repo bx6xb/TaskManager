@@ -38,7 +38,7 @@ export const todolistAPI = {
 }
 export const tasksAPI = {
   fetchTasks(todolistId: string, count?: string, page?: string) {
-    return instance.get<fetchTasksResponse>(`todo-lists/${todolistId}/tasks`)
+    return instance.get<FetchTasksResponse>(`todo-lists/${todolistId}/tasks`)
   },
   createTask(todolistId: string, taskTitle: string) {
     return instance.post<ResponseType<{ item: TaskDomainType }>>(`todo-lists/${todolistId}/tasks`, {
@@ -75,16 +75,16 @@ export type TaskDomainType = {
   description: null | string
   todoListId: string
   order: number
-  status: number
-  priority: number
+  status: TaskStatuses
+  priority: TaskPriorities
   startDate: null | string
   deadline: null | string
   addedDate: string
 }
-export type fetchTasksResponse = {
+export type FetchTasksResponse = {
   items: TaskDomainType[]
   totalCount: number
-  error: string
+  error: string | null
 }
 export type UpdateTaskDataType = {
   title: string
@@ -98,4 +98,17 @@ export type UserDomainType = {
   id: number
   email: string
   login: string
+}
+export enum TaskStatuses {
+  New = 0,
+  InProgress = 1,
+  Completed = 2,
+  Draft = 3,
+}
+export enum TaskPriorities {
+  Low = 0,
+  Middle = 1,
+  Hi = 2,
+  Urgently = 3,
+  Later = 4,
 }

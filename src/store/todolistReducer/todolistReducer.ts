@@ -2,13 +2,14 @@ import { TododlistDomainType, todolistAPI } from "../../api/api"
 import { networkErrorHandler, serverErrorHandler } from "../../utils/ErrorHandlers"
 import { setIsLoadingAC } from "../appReducer/appReducer"
 import { ThunkType } from "../store"
+import { createTasksForTodolistAC, deleteTasksTodolistAC } from "../tasksReducer/tasksReducer"
 
-const initialState = [] as TodolistEntityType[]
+const initialState = [] as TodolistStateEntityType[]
 
 export const todolistReducer = (
-  state: TodolistEntityType[] = initialState,
+  state: TodolistStateEntityType[] = initialState,
   action: TodolistReducerActionType
-): TodolistEntityType[] => {
+): TodolistStateEntityType[] => {
   switch (action.type) {
     case "todolist/SET_TODOLISTS":
       return action.todolists.map((tl) => ({ ...tl, filter: "all" }))
@@ -54,6 +55,7 @@ export const fetchTodolists = (): ThunkType => async (dispatch) => {
   try {
     const response = await todolistAPI.fetchTodolists()
     dispatch(setTodolistsAC(response.data))
+    dispatch(createTasksForTodolistAC(response.data))
   } catch (e: any) {
     networkErrorHandler(dispatch, e.message)
   }
@@ -68,7 +70,7 @@ export const createTodolistTC =
       if (response.data.resultCode === 0) {
         dispatch(createTodolistAC(response.data.data.item))
       } else {
-        serverErrorHandler(dispatch, response.data)
+        serverErrorHandler(dispatch, response.data.messages[0])
       }
     } catch (e: any) {
       networkErrorHandler(dispatch, e.message)
@@ -83,8 +85,9 @@ export const deleteTodolistTC =
       const response = await todolistAPI.deleteTodolist(todolistId)
       if (response.data.resultCode === 0) {
         dispatch(deleteTodolistAC(todolistId))
+        dispatch(deleteTasksTodolistAC(todolistId))
       } else {
-        serverErrorHandler(dispatch, response.data)
+        serverErrorHandler(dispatch, response.data.messages[0])
       }
     } catch (e: any) {
       networkErrorHandler(dispatch, e.message)
@@ -100,7 +103,7 @@ export const updateTodolistTitleTC =
       if (response.data.resultCode === 0) {
         dispatch(updateTodolistTitleAC(todolistId, todolistTitle))
       } else {
-        serverErrorHandler(dispatch, response.data)
+        serverErrorHandler(dispatch, response.data.messages[0])
       }
     } catch (e: any) {
       networkErrorHandler(dispatch, e.message)
@@ -110,7 +113,7 @@ export const updateTodolistTitleTC =
 
 // types
 export type FilterType = "all" | "completed" | "active"
-export type TodolistEntityType = {
+export type TodolistStateEntityType = {
   filter: FilterType
 } & TododlistDomainType
 export type TodolistReducerActionType =
