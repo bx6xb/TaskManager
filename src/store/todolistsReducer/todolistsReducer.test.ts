@@ -4,9 +4,9 @@ import {
   createTodolistAC,
   deleteTodolistAC,
   setTodolistsAC,
-  todolistReducer,
+  todolistsReducer,
   updateTodolistTitleAC,
-} from "./todolistReducer"
+} from "./todolistsReducer"
 
 export const todolistsDomain: TododlistDomainType[] = [
   {
@@ -42,7 +42,7 @@ const todolistsEntity: TodolistStateEntityType[] = [
 
 // tests
 test("todolists should be set", () => {
-  const newState = todolistReducer([], setTodolistsAC(todolistsDomain))
+  const newState = todolistsReducer([], setTodolistsAC(todolistsDomain))
 
   expect(newState.length).toBe(2)
   expect(newState.every((tl) => tl.filter == "all")).toBeTruthy()
@@ -55,20 +55,20 @@ test("todolist should be created", () => {
     title: "What to visit",
   }
 
-  const newState = todolistReducer(todolistsEntity, createTodolistAC(newTodolist))
+  const newState = todolistsReducer(todolistsEntity, createTodolistAC(newTodolist))
 
   expect(newState.length).toBe(3)
   expect(newState[0].id).toBe("todolistId3")
 })
 test("todolist should be deleted", () => {
-  const newState = todolistReducer(todolistsEntity, deleteTodolistAC("todolistId1"))
+  const newState = todolistsReducer(todolistsEntity, deleteTodolistAC("todolistId1"))
 
   expect(newState.length).toBe(1)
   expect(newState[0].id).toBe("todolistId2")
 })
 test("todolist title should be updated", () => {
   const newTodolistTitle = "new todolist title"
-  const newState = todolistReducer(
+  const newState = todolistsReducer(
     todolistsEntity,
     updateTodolistTitleAC("todolistId1", newTodolistTitle)
   )

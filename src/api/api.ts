@@ -84,10 +84,18 @@ export type FetchTasksResponse = {
 export type UpdateTaskDataType = {
   title: string
   description: null | string
-  status: number
-  priority: number
+  status: TaskStatuses
+  priority: TaskPriorities
   startDate: null | string
   deadline: null | string
+}
+export type UpdateTaskModelType = {
+  title?: string
+  description?: null | string
+  status?: TaskStatuses
+  priority?: TaskPriorities
+  startDate?: null | string
+  deadline?: null | string
 }
 export type UserDomainType = {
   id: number

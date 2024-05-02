@@ -1,5 +1,5 @@
 import { TaskPriorities, TaskStatuses, UpdateTaskDataType } from "../../api/api"
-import { todolistsDomain } from "../todolistReducer/todolistReducer.test"
+import { todolistsDomain } from "../todolistsReducer/todolistsReducer.test"
 import {
   createTaskAC,
   createTasksForTodolistAC,

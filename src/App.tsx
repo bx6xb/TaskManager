@@ -6,6 +6,7 @@ import { useAppDispatch, useAppSelector } from "./store/store"
 import { Preloader } from "./components/Preloader"
 import { TodolistList } from "./pages/TodolistList/TodolistList"
 import { authTC } from "./store/loginReducer/loginReducer"
+import s from "./App.module.css"
 
 function App() {
   const isAppInitialized = useAppSelector((state) => state.app.isAppInitialized)
@@ -21,12 +22,14 @@ function App() {
       <Header />
       {isLoading && <Preloader />}
       {isAppInitialized && (
-        <Routes>
-          <Route path="/" element={<Navigate to={"/todolist-list"} />} />
+        <div className={s.appContainer}>
+          <Routes>
+            <Route path="/" element={<Navigate to={"/todolist-list"} />} />
 
-          <Route path="/todolist-list" element={<TodolistList />} />
-          <Route path="/login" element={<Login />} />
-        </Routes>
+            <Route path="/todolist-list" element={<TodolistList />} />
+            <Route path="/login" element={<Login />} />
+          </Routes>
+        </div>
       )}
     </>
   )

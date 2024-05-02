@@ -6,9 +6,9 @@ import { createTasksForTodolistAC, deleteTasksTodolistAC } from "../tasksReducer
 
 const initialState = [] as TodolistStateEntityType[]
 
-export const todolistReducer = (
+export const todolistsReducer = (
   state: TodolistStateEntityType[] = initialState,
-  action: TodolistReducerActionType
+  action: todolistsReducerActionType
 ): TodolistStateEntityType[] => {
   switch (action.type) {
     case "todolist/SET_TODOLISTS":
@@ -50,7 +50,7 @@ export const updateTodolistTitleAC = (todolistId: string, todolistTitle: string)
   }) as const
 
 // thunks
-export const fetchTodolists = (): ThunkType => async (dispatch) => {
+export const fetchTodolistsTC = (): ThunkType => async (dispatch) => {
   dispatch(setIsLoadingAC(true))
   try {
     const response = await todolistAPI.fetchTodolists()
@@ -116,7 +116,7 @@ export type FilterType = "all" | "completed" | "active"
 export type TodolistStateEntityType = {
   filter: FilterType
 } & TododlistDomainType
-export type TodolistReducerActionType =
+export type todolistsReducerActionType =
   | ReturnType<typeof setTodolistsAC>
   | ReturnType<typeof createTodolistAC>
   | ReturnType<typeof deleteTodolistAC>

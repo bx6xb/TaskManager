@@ -1,4 +1,10 @@
-import { TaskDomainType, TododlistDomainType, UpdateTaskDataType, tasksAPI } from "../../api/api"
+import {
+  TaskDomainType,
+  TododlistDomainType,
+  UpdateTaskDataType,
+  UpdateTaskModelType,
+  tasksAPI,
+} from "../../api/api"
 import { networkErrorHandler, serverErrorHandler } from "../../utils/ErrorHandlers"
 import { setIsLoadingAC } from "../appReducer/appReducer"
 import { ThunkType } from "../store"
@@ -134,8 +140,22 @@ export const deleteTaskTC =
     dispatch(setIsLoadingAC(false))
   }
 export const updateTaskTC =
-  (todolistId: string, taskId: string, data: UpdateTaskDataType): ThunkType =>
-  async (dispatch) => {
+  (todolistId: string, taskId: string, dataModel: UpdateTaskModelType): ThunkType =>
+  async (dispatch, getState) => {
+    const tasks = getState().tasks
+
+    const task = tasks[todolistId].find((t) => t.id === taskId)!
+
+    const data: UpdateTaskDataType = {
+      deadline: task.deadline,
+      description: task.description,
+      priority: task.priority,
+      startDate: task.startDate,
+      status: task.status,
+      title: task.title,
+      ...dataModel,
+    }
+
     dispatch(setIsLoadingAC(true))
     try {
       const response = await tasksAPI.updateTask(todolistId, taskId, data)
