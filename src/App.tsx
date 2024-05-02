@@ -7,10 +7,12 @@ import { Preloader } from "./components/Preloader"
 import { TodolistList } from "./pages/TodolistList/TodolistList"
 import { authTC } from "./store/loginReducer/loginReducer"
 import s from "./App.module.css"
+import { Snackbar } from "./components/Snackbar"
 
 function App() {
   const isAppInitialized = useAppSelector((state) => state.app.isAppInitialized)
   const isLoading = useAppSelector((state) => state.app.isLoading)
+  const error = useAppSelector((state) => state.app.error)
   const dispatch = useAppDispatch()
 
   useEffect(() => {
@@ -31,6 +33,7 @@ function App() {
           </Routes>
         </div>
       )}
+      <Snackbar />
     </>
   )
 }

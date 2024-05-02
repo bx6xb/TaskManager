@@ -1,4 +1,8 @@
-const initialState = {} as AppStateType
+const initialState = {
+  error: null,
+  isAppInitialized: false,
+  isLoading: false,
+} as AppStateType
 
 export const appReducer = (
   state: AppStateType = initialState,
@@ -31,7 +35,7 @@ export const setIsLoadingAC = (isLoading: boolean) =>
     type: "app/SET_IS_LOADING",
     isLoading,
   }) as const
-export const setErrorAC = (error: string) =>
+export const setErrorAC = (error: string | null) =>
   ({
     type: "app/SET_ERROR",
     error,
@@ -45,7 +49,7 @@ export const setIsAppInitializedAC = (isAppInitialized: boolean) =>
 // types
 export type AppStateType = {
   isLoading: boolean
-  error: string
+  error: string | null
   isAppInitialized: boolean
 }
 export type AppActionType =
