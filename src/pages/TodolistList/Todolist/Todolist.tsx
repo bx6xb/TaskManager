@@ -46,7 +46,7 @@ export const Todolist = (props: TodolistPropsType) => {
       </h3>
 
       <Input getItem={createTask} />
-      {props.tasks &&
+      {props.tasks.length ? (
         props.tasks.map((t) => (
           <Task
             key={t.id}
@@ -58,7 +58,10 @@ export const Todolist = (props: TodolistPropsType) => {
             updateTaskTitle={props.updateTaskTitle}
             updateTaskStatus={props.updateTaskStatus}
           />
-        ))}
+        ))
+      ) : (
+        <h3>No tasks...</h3>
+      )}
     </Paper>
   )
 }

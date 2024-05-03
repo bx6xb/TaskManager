@@ -2,6 +2,7 @@ import { useFormik } from "formik"
 import { useAppDispatch, useAppSelector } from "../../store/store"
 import { Navigate } from "react-router-dom"
 import { loginTC } from "../../store/loginReducer/loginReducer"
+import { Button, Checkbox, FormControlLabel, Paper, TextField, Typography } from "@mui/material"
 
 export const Login = () => {
   const isAuthorized = useAppSelector((state) => state.login.isAuthorized)
@@ -25,33 +26,48 @@ export const Login = () => {
   }
 
   return (
-    <div style={{ display: "flex", justifyContent: "center", padding: "20px" }}>
-      <form onSubmit={formik.handleSubmit} style={{ width: "200px" }}>
-        <input
-          type="email"
-          placeholder="email"
-          name="email"
-          value={formik.values.email}
-          onChange={formik.handleChange}
-        />
-        <br />
-        <input
-          type="password"
-          placeholder="password"
-          name="password"
-          value={formik.values.password}
-          onChange={formik.handleChange}
-        />
-        <br />
-        <input
-          type="checkbox"
-          name="rememberMe"
-          checked={formik.values.rememberMe}
-          onChange={formik.handleChange}
-        />
-        <br />
-        <button type="submit">Submit</button>
-      </form>
+    <div style={{ display: "flex", justifyContent: "center" }}>
+      <Paper sx={{ padding: "20px" }}>
+        <Typography variant="h4" sx={{ textAlign: "center", marginBottom: "10px" }}>
+          Login
+        </Typography>
+        <form onSubmit={formik.handleSubmit} style={{ width: "200px" }}>
+          <TextField
+            id="outlined-basic"
+            label="Email"
+            variant="outlined"
+            type="email"
+            placeholder="email"
+            name="email"
+            value={formik.values.email}
+            onChange={formik.handleChange}
+            sx={{ marginBottom: "5px" }}
+          />
+          <TextField
+            id="outlined-basic"
+            label="Password"
+            variant="outlined"
+            type="password"
+            placeholder="password"
+            name="password"
+            value={formik.values.password}
+            onChange={formik.handleChange}
+          />
+          <FormControlLabel
+            control={
+              <Checkbox
+                name="rememberMe"
+                checked={formik.values.rememberMe}
+                onChange={formik.handleChange}
+              />
+            }
+            label="Remember me"
+          />
+          <Button type="submit" variant="contained">
+            Submit
+          </Button>
+        </form>
+      </Paper>
     </div>
   )
 }
