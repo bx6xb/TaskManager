@@ -1,6 +1,8 @@
 import { ChangeEvent } from "react"
 import { TaskStatuses } from "../../../../api/api"
 import { EditableSpan } from "../../../../components/EditableSpan"
+import { Checkbox } from "@mui/material"
+import { DeleteButton } from "../../../../components/DeleteButton"
 
 type TaskPropsType = {
   id: string
@@ -29,13 +31,12 @@ export const Task = (props: TaskPropsType) => {
 
   return (
     <div>
-      <input
-        type="checkbox"
+      <Checkbox
         checked={props.taskStatus === TaskStatuses.Completed}
         onChange={taskStatusOnChange}
       />
       <EditableSpan title={props.title} changeItem={changeTaskTitle} />
-      <button onClick={deleteTaskOnClick}>x</button>
+      <DeleteButton onClick={deleteTaskOnClick} />
     </div>
   )
 }

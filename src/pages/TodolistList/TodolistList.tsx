@@ -11,6 +11,7 @@ import { Input } from "../../components/Input"
 import { createTaskTC, deleteTaskTC, updateTaskTC } from "../../store/tasksReducer/tasksReducer"
 import { TaskStatuses } from "../../api/api"
 import { Todolist } from "./Todolist/Todolist"
+import { Grid } from "@mui/material"
 
 export const TodolistList = () => {
   const todolists = useAppSelector((state) => state.todolists)
@@ -18,6 +19,7 @@ export const TodolistList = () => {
   const isAuthorized = useAppSelector((state) => state.login.isAuthorized)
   const dispatch = useAppDispatch()
 
+  // fetch todolist on first init if authorized
   useEffect(() => {
     if (isAuthorized) {
       dispatch(fetchTodolistsTC())
@@ -57,7 +59,7 @@ export const TodolistList = () => {
   return (
     <>
       <Input getItem={createTodolist} />
-      <div style={{ display: "flex" }}>
+      <Grid container spacing={4} sx={{ marginTop: "10px" }}>
         {todolists.map((tl) => {
           let filteredTasks = tasks[tl.id]
           if (tl.filter === "active") {
@@ -68,21 +70,22 @@ export const TodolistList = () => {
           }
 
           return (
-            <Todolist
-              key={tl.id}
-              id={tl.id}
-              title={tl.title}
-              tasks={filteredTasks}
-              deleteTodolist={deleteTodolist}
-              updateTodolistTitle={updateTodolistTitle}
-              createTask={createTask}
-              deleteTask={deleteTask}
-              updateTaskTitle={updateTaskTitle}
-              updateTaskStatus={updateTaskStatus}
-            />
+            <Grid item xs={3} key={tl.id}>
+              <Todolist
+                id={tl.id}
+                title={tl.title}
+                tasks={filteredTasks}
+                deleteTodolist={deleteTodolist}
+                updateTodolistTitle={updateTodolistTitle}
+                createTask={createTask}
+                deleteTask={deleteTask}
+                updateTaskTitle={updateTaskTitle}
+                updateTaskStatus={updateTaskStatus}
+              />
+            </Grid>
           )
         })}
-      </div>
+      </Grid>
     </>
   )
 }

@@ -1,4 +1,6 @@
+import { IconButton, TextField } from "@mui/material"
 import { ChangeEvent, KeyboardEvent, useState } from "react"
+import AddIcon from "@mui/icons-material/Add"
 
 type InputPropsType = {
   getItem: (value: string) => void
@@ -23,14 +25,18 @@ export const Input = (props: InputPropsType) => {
   }
 
   return (
-    <div>
-      <input
-        type="text"
+    <div style={{ display: "flex", alignContent: "center" }}>
+      <TextField
+        id="standard-basic"
+        variant="standard"
         value={inputValue}
         onChange={inputOnChangeHandler}
         onKeyDown={onKeyDownSubmit}
       />
-      <button onClick={btnOnClick}>+</button>
+
+      <IconButton onClick={btnOnClick}>
+        <AddIcon />
+      </IconButton>
     </div>
   )
 }

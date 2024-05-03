@@ -4,6 +4,9 @@ import { useAppDispatch } from "../../../store/store"
 import { fetchTasksTC } from "../../../store/tasksReducer/tasksReducer"
 import { TaskDomainType, TaskStatuses } from "../../../api/api"
 import { Task } from "./Task/Task"
+import { Paper } from "@mui/material"
+import { DeleteButton } from "../../../components/DeleteButton"
+import { EditableSpan } from "../../../components/EditableSpan"
 
 type TodolistPropsType = {
   id: string
@@ -31,19 +34,17 @@ export const Todolist = (props: TodolistPropsType) => {
   const deleteTodolist = () => {
     props.deleteTodolist(props.id)
   }
+  const updateTodolistTitle = (title: string) => {
+    props.updateTodolistTitle(props.id, title)
+  }
 
   return (
-    <div
-      style={{
-        border: "2px solid black",
-        width: "250px",
-        borderRadius: "3px",
-        padding: "5px",
-        margin: "15px 15px 0 0",
-      }}
-    >
-      {props.title + " "}
-      <button onClick={deleteTodolist}>x</button>
+    <Paper elevation={8} sx={{ padding: "10px" }}>
+      <h3 style={{ wordWrap: "break-word" }}>
+        <EditableSpan changeItem={updateTodolistTitle} title={props.title} />
+        <DeleteButton onClick={deleteTodolist} />
+      </h3>
+
       <Input getItem={createTask} />
       {props.tasks &&
         props.tasks.map((t) => (
@@ -58,6 +59,6 @@ export const Todolist = (props: TodolistPropsType) => {
             updateTaskStatus={props.updateTaskStatus}
           />
         ))}
-    </div>
+    </Paper>
   )
 }
