@@ -1,8 +1,8 @@
-const initialState = {
+const initialState: AppStateType = {
   error: null,
   isAppInitialized: false,
   isLoading: false,
-} as AppStateType
+}
 
 export const appReducer = (
   state: AppStateType = initialState,
@@ -45,6 +45,18 @@ export const setIsAppInitializedAC = (isAppInitialized: boolean) =>
     type: "app/SET_IS_APP_INITIALIZED",
     isAppInitialized,
   }) as const
+export const setTodolistsDisabledAC = (todolistId: string, isDisabled: boolean) =>
+  ({
+    type: "app/SET_TODOLISTS_DISABLED",
+    todolistId,
+    isDisabled,
+  }) as const
+export const setTasksDisabledAC = (taskId: string, isDisabled: boolean) =>
+  ({
+    type: "app/SET_TASKS_DISABLED",
+    taskId,
+    isDisabled,
+  }) as const
 
 // types
 export type AppStateType = {
@@ -56,3 +68,5 @@ export type AppActionType =
   | ReturnType<typeof setIsLoadingAC>
   | ReturnType<typeof setErrorAC>
   | ReturnType<typeof setIsAppInitializedAC>
+  | ReturnType<typeof setTodolistsDisabledAC>
+  | ReturnType<typeof setTasksDisabledAC>

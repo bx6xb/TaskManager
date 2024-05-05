@@ -5,6 +5,7 @@ import AddIcon from "@mui/icons-material/Add"
 type InputPropsType = {
   getItem: (value: string) => void
   initialValue?: string
+  isStretched?: boolean
 }
 
 export const Input = (props: InputPropsType) => {
@@ -24,6 +25,12 @@ export const Input = (props: InputPropsType) => {
     }
   }
 
+  const inputStyles = props.isStretched
+    ? {
+        sx: { width: "100%" },
+      }
+    : {}
+
   return (
     <div style={{ display: "flex", alignContent: "center" }}>
       <TextField
@@ -32,6 +39,7 @@ export const Input = (props: InputPropsType) => {
         value={inputValue}
         onChange={inputOnChangeHandler}
         onKeyDown={onKeyDownSubmit}
+        {...inputStyles}
       />
 
       <IconButton onClick={btnOnClick}>

@@ -1,17 +1,19 @@
 import { useEffect } from "react"
 import { Input } from "../../../components/Input"
 import { useAppDispatch } from "../../../store/store"
-import { fetchTasksTC } from "../../../store/tasksReducer/tasksReducer"
-import { TaskDomainType, TaskStatuses } from "../../../api/api"
+import { TaskEntityType, fetchTasksTC } from "../../../store/tasksReducer/tasksReducer"
+import { TaskStatuses } from "../../../api/api"
 import { Task } from "./Task/Task"
 import { Paper } from "@mui/material"
 import { DeleteButton } from "../../../components/DeleteButton"
 import { EditableSpan } from "../../../components/EditableSpan"
+import { EntityStatusType } from "../../../store/todolistReducer/todolistReducer"
 
 type TodolistPropsType = {
   id: string
   title: string
-  tasks: TaskDomainType[]
+  todolistStatus: EntityStatusType
+  tasks: TaskEntityType[]
   deleteTodolist: (todolistId: string) => void
   updateTodolistTitle: (todolistId: string, todolistTitle: string) => void
   createTask: (todolistId: string, taskTitle: string) => void
@@ -38,22 +40,26 @@ export const Todolist = (props: TodolistPropsType) => {
     props.updateTodolistTitle(props.id, title)
   }
 
+  const isDisabled = props.todolistStatus === "loading"
+
   return (
     <Paper elevation={8} sx={{ padding: "10px" }}>
       <h3 style={{ wordWrap: "break-word" }}>
         <EditableSpan changeItem={updateTodolistTitle} title={props.title} />
-        <DeleteButton onClick={deleteTodolist} />
+        <DeleteButton onClick={deleteTodolist} disabled={isDisabled} />
       </h3>
 
-      <Input getItem={createTask} />
+      <Input getItem={createTask} isStretched />
+
       {props.tasks.length ? (
         props.tasks.map((t) => (
           <Task
             key={t.id}
             id={t.id}
             title={t.title}
-            todolistId={props.id}
             taskStatus={t.status}
+            taskEntityStatus={t.entityStatus}
+            todolistId={props.id}
             deleteTask={props.deleteTask}
             updateTaskTitle={props.updateTaskTitle}
             updateTaskStatus={props.updateTaskStatus}

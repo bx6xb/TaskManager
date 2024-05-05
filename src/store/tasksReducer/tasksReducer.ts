@@ -8,6 +8,7 @@ import {
 import { networkErrorHandler, serverErrorHandler } from "../../utils/ErrorHandlers"
 import { setIsLoadingAC } from "../appReducer/appReducer"
 import { ThunkType } from "../store"
+import { EntityStatusType } from "../todolistReducer/todolistReducer"
 
 const initialState = {} as TasksStateType
 
@@ -17,7 +18,7 @@ export const tasksReducer = (
 ): TasksStateType => {
   switch (action.type) {
     case "tasks/CREATE_TASKS_FOR_TODOLIST":
-      const tasksState: TasksStateType = {}
+      const tasksState: TasksStateType = { ...state }
       action.todolists.forEach((tl) => {
         tasksState[tl.id] = []
       })
@@ -25,12 +26,15 @@ export const tasksReducer = (
     case "tasks/SET_TASKS":
       return {
         ...state,
-        [action.todolistId]: action.tasks,
+        [action.todolistId]: action.tasks.map((t) => ({ ...t, entityStatus: "idle" })),
       }
     case "tasks/CREATE_TASK":
       return {
         ...state,
-        [action.todolistId]: [action.task, ...state[action.todolistId]],
+        [action.todolistId]: [
+          { ...action.task, entityStatus: "idle" },
+          ...state[action.todolistId],
+        ],
       }
     case "tasks/DELETE_TASK":
       return {
@@ -48,6 +52,13 @@ export const tasksReducer = (
       const stateCopy = { ...state }
       delete stateCopy[action.todolistId]
       return stateCopy
+    case "tasks/SET_TASK_STATUS":
+      return {
+        ...state,
+        [action.todolistId]: state[action.todolistId].map((t) =>
+          t.id === action.taskId ? { ...t, entityStatus: action.entityStatus } : t
+        ),
+      }
     default:
       return state
   }
@@ -89,6 +100,17 @@ export const deleteTasksTodolistAC = (todolistId: string) =>
     type: "tasks/DELETE_TASKS_TODOLIST",
     todolistId,
   }) as const
+export const setTaskStatusAC = (
+  todolistId: string,
+  taskId: string,
+  entityStatus: EntityStatusType
+) =>
+  ({
+    type: "tasks/SET_TASK_STATUS",
+    todolistId,
+    taskId,
+    entityStatus,
+  }) as const
 
 // thunks
 export const fetchTasksTC =
@@ -127,52 +149,63 @@ export const deleteTaskTC =
   (todolistId: string, taskId: string): ThunkType =>
   async (dispatch) => {
     dispatch(setIsLoadingAC(true))
+    dispatch(setTaskStatusAC(todolistId, taskId, "loading"))
     try {
       const response = await tasksAPI.deleteTask(todolistId, taskId)
       if (response.data.resultCode === 0) {
         dispatch(deleteTaskAC(todolistId, taskId))
+        dispatch(setTaskStatusAC(todolistId, taskId, "succeeded"))
       } else {
         serverErrorHandler(dispatch, response.data.messages[0])
+        dispatch(setTaskStatusAC(todolistId, taskId, "canceled"))
       }
     } catch (e: any) {
       networkErrorHandler(dispatch, e.message)
+      dispatch(setTaskStatusAC(todolistId, taskId, "canceled"))
     }
     dispatch(setIsLoadingAC(false))
   }
 export const updateTaskTC =
   (todolistId: string, taskId: string, dataModel: UpdateTaskModelType): ThunkType =>
   async (dispatch, getState) => {
-    const tasks = getState().tasks
-
-    const task = tasks[todolistId].find((t) => t.id === taskId)!
-
-    const data: UpdateTaskDataType = {
-      deadline: task.deadline,
-      description: task.description,
-      priority: task.priority,
-      startDate: task.startDate,
-      status: task.status,
-      title: task.title,
-      ...dataModel,
-    }
-
     dispatch(setIsLoadingAC(true))
+    dispatch(setTaskStatusAC(todolistId, taskId, "loading"))
     try {
+      const tasks = getState().tasks
+
+      const task = tasks[todolistId].find((t) => t.id === taskId)!
+
+      const data: UpdateTaskDataType = {
+        deadline: task.deadline,
+        description: task.description,
+        priority: task.priority,
+        startDate: task.startDate,
+        status: task.status,
+        title: task.title,
+        ...dataModel,
+      }
+
       const response = await tasksAPI.updateTask(todolistId, taskId, data)
       if (response.data.resultCode === 0) {
         dispatch(updateTaskAC(todolistId, taskId, data))
+        dispatch(setTaskStatusAC(todolistId, taskId, "succeeded"))
       } else {
         serverErrorHandler(dispatch, response.data.messages[0])
+        dispatch(setTaskStatusAC(todolistId, taskId, "canceled"))
       }
     } catch (e: any) {
       networkErrorHandler(dispatch, e.message)
+      dispatch(setTaskStatusAC(todolistId, taskId, "canceled"))
     }
     dispatch(setIsLoadingAC(false))
   }
 
 // types
+export type TaskEntityType = {
+  entityStatus: EntityStatusType
+} & TaskDomainType
 export type TasksStateType = {
-  [todolistId: string]: TaskDomainType[]
+  [todolistId: string]: TaskEntityType[]
 }
 export type TasksReducerActionType =
   | ReturnType<typeof createTasksForTodolistAC>
@@ -181,3 +214,4 @@ export type TasksReducerActionType =
   | ReturnType<typeof deleteTaskAC>
   | ReturnType<typeof updateTaskAC>
   | ReturnType<typeof deleteTasksTodolistAC>
+  | ReturnType<typeof setTaskStatusAC>

@@ -5,7 +5,7 @@ import {
   deleteTodolistTC,
   fetchTodolistsTC,
   updateTodolistTitleTC,
-} from "../../store/todolistsReducer/todolistsReducer"
+} from "../../store/todolistReducer/todolistReducer"
 import { Navigate } from "react-router-dom"
 import { Input } from "../../components/Input"
 import { createTaskTC, deleteTaskTC, updateTaskTC } from "../../store/tasksReducer/tasksReducer"
@@ -59,9 +59,11 @@ export const TodolistList = () => {
   return (
     <>
       <Input getItem={createTodolist} />
+
       <Grid container spacing={4} sx={{ marginTop: "10px" }}>
         {todolists.map((tl) => {
           let filteredTasks = tasks[tl.id]
+
           if (tl.filter === "active") {
             filteredTasks = filteredTasks.filter((t) => t.status === TaskStatuses.New)
           }
@@ -70,10 +72,11 @@ export const TodolistList = () => {
           }
 
           return (
-            <Grid item xs={3} key={tl.id}>
+            <Grid item md={4} lg={4} xl={3} key={tl.id}>
               <Todolist
                 id={tl.id}
                 title={tl.title}
+                todolistStatus={tl.entityStatus}
                 tasks={filteredTasks}
                 deleteTodolist={deleteTodolist}
                 updateTodolistTitle={updateTodolistTitle}

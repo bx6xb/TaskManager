@@ -1,16 +1,19 @@
 import { TaskPriorities, TaskStatuses, UpdateTaskDataType } from "../../api/api"
-import { todolistsDomain } from "../todolistsReducer/todolistsReducer.test"
+import { EntityStatusType } from "../todolistReducer/todolistReducer"
+import { todolistsDomain } from "../todolistReducer/todolistReducer.test"
 import {
+  TaskEntityType,
   createTaskAC,
   createTasksForTodolistAC,
   deleteTaskAC,
   deleteTasksTodolistAC,
+  setTaskStatusAC,
   setTasksAC,
   tasksReducer,
   updateTaskAC,
 } from "./tasksReducer"
 
-const tasks = [
+const tasks: TaskEntityType[] = [
   {
     id: "taskId1",
     title: "zenow",
@@ -22,6 +25,7 @@ const tasks = [
     startDate: null,
     deadline: null,
     addedDate: "2024-04-30T15:12:30.51",
+    entityStatus: "idle",
   },
   {
     id: "taskId2",
@@ -34,6 +38,7 @@ const tasks = [
     startDate: null,
     deadline: null,
     addedDate: "2024-04-30T15:12:30.51",
+    entityStatus: "idle",
   },
 ]
 
@@ -91,4 +96,15 @@ test("todolist should be deleted", () => {
 
   expect(Object.keys(newState).length).toBe(1)
   expect(newState["todolistId2"]).toBeUndefined()
+})
+test("task status should be changed", () => {
+  const newStatus: EntityStatusType = "succeeded"
+  const newState = tasksReducer(
+    {
+      todolistId1: tasks,
+    },
+    setTaskStatusAC("todolistId1", "taskId2", newStatus)
+  )
+
+  expect(newState["todolistId1"][1].entityStatus).toBe(newStatus)
 })
