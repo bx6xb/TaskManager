@@ -1,13 +1,14 @@
 import { useFormik } from "formik"
-import { useAppDispatch, useAppSelector } from "../../store/store"
 import { Navigate } from "react-router-dom"
-import { loginTC } from "../../store/loginReducer/loginReducer"
 import { Button, Checkbox, FormControlLabel, Paper, TextField, Typography } from "@mui/material"
+import { FormType } from "./LoginContainer"
 
-export const Login = () => {
-  const isAuthorized = useAppSelector((state) => state.login.isAuthorized)
-  const dispatch = useAppDispatch()
+type LoginPropsType = {
+  isAuthorized: boolean
+  onFormSubmit: (values: FormType) => void
+}
 
+export const Login = (props: LoginPropsType) => {
   const formik = useFormik({
     initialValues: {
       email: "",
@@ -16,12 +17,12 @@ export const Login = () => {
     },
     onSubmit: (values) => {
       if (values.email && values.password) {
-        dispatch(loginTC(values))
+        props.onFormSubmit(values)
       }
     },
   })
 
-  if (isAuthorized) {
+  if (props.isAuthorized) {
     return <Navigate to={"/todolist-list"} />
   }
 
@@ -41,7 +42,7 @@ export const Login = () => {
             name="email"
             value={formik.values.email}
             onChange={formik.handleChange}
-            sx={{ marginBottom: "5px" }}
+            sx={{ marginBottom: "10px" }}
           />
           <TextField
             id="outlined-basic"

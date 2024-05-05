@@ -3,12 +3,12 @@ import DeleteIcon from "@mui/icons-material/Delete"
 
 type DeleteButton = {
   onClick: () => void
-  disabled?: boolean
+  isDisabled?: boolean
 }
 
 export const DeleteButton = (props: DeleteButton) => {
   return (
-    <IconButton onClick={props.onClick} disabled={props.disabled}>
+    <IconButton onClick={props.onClick} disabled={props.isDisabled}>
       <DeleteIcon />
     </IconButton>
   )

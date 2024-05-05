@@ -1,10 +1,9 @@
 import { ChangeEvent } from "react"
 import { TaskStatuses } from "../../../../api/api"
-import { EditableSpan } from "../../../../components/EditableSpan"
+import { EditableSpan } from "../../../../components/EditableSpan/EditableSpan"
 import { Checkbox } from "@mui/material"
-import { DeleteButton } from "../../../../components/DeleteButton"
+import { DeleteButton } from "../../../../components/DeleteButton/DeleteButton"
 import { EntityStatusType } from "../../../../store/todolistReducer/todolistReducer"
-import { Input } from "../../../../components/Input"
 
 type TaskPropsType = {
   id: string
@@ -44,7 +43,7 @@ export const Task = (props: TaskPropsType) => {
         disabled={isDisabled}
       />
       <EditableSpan title={props.title} changeItem={updateTaskTitle} />
-      <DeleteButton onClick={deleteTaskOnClick} disabled={isDisabled} />
+      <DeleteButton onClick={deleteTaskOnClick} isDisabled={isDisabled} />
     </div>
   )
 }

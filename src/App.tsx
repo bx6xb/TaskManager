@@ -1,13 +1,14 @@
 import { Navigate, Route, Routes } from "react-router-dom"
 import { Header } from "./layout/Header"
-import { Login } from "./pages/Login/Login"
 import { useEffect } from "react"
 import { useAppDispatch, useAppSelector } from "./store/store"
-import { Preloader } from "./components/Preloader"
+import { Preloader } from "./components/Preloader/Preloader"
 import { TodolistList } from "./pages/TodolistList/TodolistList"
 import { authTC } from "./store/loginReducer/loginReducer"
 import s from "./App.module.css"
-import { Snackbar } from "./components/Snackbar"
+import { CircularProgress } from "@mui/material"
+import { SnackbarContainer } from "./components/Snackbar/SnackbarContainer"
+import { LoginContainer } from "./pages/Login/LoginContainer"
 
 function App() {
   const isAppInitialized = useAppSelector((state) => state.app.isAppInitialized)
@@ -17,6 +18,14 @@ function App() {
   useEffect(() => {
     dispatch(authTC())
   }, [])
+
+  if (!isAppInitialized) {
+    return (
+      <CircularProgress
+        sx={{ position: "absolute", top: "30%", left: "50%", transform: "translateX(-50%)" }}
+      />
+    )
+  }
 
   return (
     <>
@@ -28,11 +37,11 @@ function App() {
             <Route path="/" element={<Navigate to={"/todolist-list"} />} />
 
             <Route path="/todolist-list" element={<TodolistList />} />
-            <Route path="/login" element={<Login />} />
+            <Route path="/login" element={<LoginContainer />} />
           </Routes>
         </div>
       )}
-      <Snackbar />
+      <SnackbarContainer />
     </>
   )
 }

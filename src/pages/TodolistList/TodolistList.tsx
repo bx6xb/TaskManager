@@ -7,7 +7,7 @@ import {
   updateTodolistTitleTC,
 } from "../../store/todolistReducer/todolistReducer"
 import { Navigate } from "react-router-dom"
-import { Input } from "../../components/Input"
+import { Input } from "../../components/Input/Input"
 import { createTaskTC, deleteTaskTC, updateTaskTC } from "../../store/tasksReducer/tasksReducer"
 import { TaskStatuses } from "../../api/api"
 import { Todolist } from "./Todolist/Todolist"

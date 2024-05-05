@@ -1,12 +1,12 @@
 import { useEffect } from "react"
-import { Input } from "../../../components/Input"
+import { Input } from "../../../components/Input/Input"
 import { useAppDispatch } from "../../../store/store"
 import { TaskEntityType, fetchTasksTC } from "../../../store/tasksReducer/tasksReducer"
 import { TaskStatuses } from "../../../api/api"
 import { Task } from "./Task/Task"
 import { Paper } from "@mui/material"
-import { DeleteButton } from "../../../components/DeleteButton"
-import { EditableSpan } from "../../../components/EditableSpan"
+import { DeleteButton } from "../../../components/DeleteButton/DeleteButton"
+import { EditableSpan } from "../../../components/EditableSpan/EditableSpan"
 import { EntityStatusType } from "../../../store/todolistReducer/todolistReducer"
 
 type TodolistPropsType = {
@@ -20,6 +20,7 @@ type TodolistPropsType = {
   deleteTask: (todolistId: string, taskId: string) => void
   updateTaskTitle: (todolistId: string, taskId: string, title: string) => void
   updateTaskStatus: (todolistId: string, taskId: string, status: TaskStatuses) => void
+  demo?: boolean
 }
 
 export const Todolist = (props: TodolistPropsType) => {
@@ -27,7 +28,9 @@ export const Todolist = (props: TodolistPropsType) => {
 
   // fetch tasks for todolist on first init
   useEffect(() => {
-    dispatch(fetchTasksTC(props.id))
+    if (!props.demo) {
+      dispatch(fetchTasksTC(props.id))
+    }
   }, [])
 
   const createTask = (taskTitle: string) => {
@@ -48,7 +51,7 @@ export const Todolist = (props: TodolistPropsType) => {
     <Paper elevation={8} sx={{ padding: "20px" }}>
       <h3 style={{ wordWrap: "break-word" }}>
         <EditableSpan changeItem={updateTodolistTitle} title={props.title} />
-        <DeleteButton onClick={deleteTodolist} disabled={isDisabled} />
+        <DeleteButton onClick={deleteTodolist} isDisabled={isDisabled} />
       </h3>
 
       <div style={{ marginBottom: "10px" }}>
