@@ -37,19 +37,23 @@ export const Todolist = (props: TodolistPropsType) => {
     props.deleteTodolist(props.id)
   }
   const updateTodolistTitle = (title: string) => {
-    props.updateTodolistTitle(props.id, title)
+    if (title !== props.title) {
+      props.updateTodolistTitle(props.id, title)
+    }
   }
 
   const isDisabled = props.todolistStatus === "loading"
 
   return (
-    <Paper elevation={8} sx={{ padding: "10px" }}>
+    <Paper elevation={8} sx={{ padding: "20px" }}>
       <h3 style={{ wordWrap: "break-word" }}>
         <EditableSpan changeItem={updateTodolistTitle} title={props.title} />
         <DeleteButton onClick={deleteTodolist} disabled={isDisabled} />
       </h3>
 
-      <Input getItem={createTask} isStretched />
+      <div style={{ marginBottom: "10px" }}>
+        <Input getItem={createTask} isStretched />
+      </div>
 
       {props.tasks.length ? (
         props.tasks.map((t) => (

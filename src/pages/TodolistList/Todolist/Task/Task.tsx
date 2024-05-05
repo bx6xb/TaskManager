@@ -4,6 +4,7 @@ import { EditableSpan } from "../../../../components/EditableSpan"
 import { Checkbox } from "@mui/material"
 import { DeleteButton } from "../../../../components/DeleteButton"
 import { EntityStatusType } from "../../../../store/todolistReducer/todolistReducer"
+import { Input } from "../../../../components/Input"
 
 type TaskPropsType = {
   id: string
@@ -24,8 +25,10 @@ export const Task = (props: TaskPropsType) => {
       e.currentTarget.checked ? TaskStatuses.Completed : TaskStatuses.New
     )
   }
-  const changeTaskTitle = (title: string) => {
-    props.updateTaskTitle(props.todolistId, props.id, title)
+  const updateTaskTitle = (title: string) => {
+    if (title !== props.title) {
+      props.updateTaskTitle(props.todolistId, props.id, title)
+    }
   }
   const deleteTaskOnClick = () => {
     props.deleteTask(props.todolistId, props.id)
@@ -34,13 +37,13 @@ export const Task = (props: TaskPropsType) => {
   const isDisabled = props.taskEntityStatus === "loading"
 
   return (
-    <div>
+    <div style={{ display: "flex", alignItems: "center" }}>
       <Checkbox
         checked={props.taskStatus === TaskStatuses.Completed}
         onChange={taskStatusOnChange}
         disabled={isDisabled}
       />
-      <EditableSpan title={props.title} changeItem={changeTaskTitle} />
+      <EditableSpan title={props.title} changeItem={updateTaskTitle} />
       <DeleteButton onClick={deleteTaskOnClick} disabled={isDisabled} />
     </div>
   )

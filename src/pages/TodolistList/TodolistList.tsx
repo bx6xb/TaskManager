@@ -60,7 +60,7 @@ export const TodolistList = () => {
     <>
       <Input getItem={createTodolist} />
 
-      <Grid container spacing={4} sx={{ marginTop: "10px" }}>
+      <Grid container spacing={4} sx={{ marginTop: "10px" }} justifyContent={"center"}>
         {todolists.map((tl) => {
           let filteredTasks = tasks[tl.id]
 

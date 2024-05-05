@@ -1,40 +1,28 @@
-import { TextField } from "@mui/material"
-import { ChangeEvent, KeyboardEvent, useState } from "react"
+import { useState } from "react"
+import { Input } from "./Input"
 
 type EditableSpanPropsType = {
   title: string
   changeItem: (value: string) => void
+  isStretched?: boolean
 }
 
 export const EditableSpan = (props: EditableSpanPropsType) => {
   const [isEditMode, setIsEditMode] = useState<boolean>(false)
-  const [inputValue, setInputValue] = useState<string>(props.title)
 
-  const submitInputValue = () => {
-    props.changeItem(inputValue)
-    setIsEditMode(false)
-  }
   const spanOnDoubleClick = () => {
     setIsEditMode(true)
   }
-  const inputOnChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setInputValue(e.currentTarget.value)
-  }
-  const onKeyDownSubmit = (e: KeyboardEvent<HTMLDivElement>) => {
-    if (e.key === "Enter") {
-      submitInputValue()
-    }
+  const inputOnSubmit = () => {
+    setIsEditMode(false)
   }
 
   return isEditMode ? (
-    <TextField
-      id="standard-basic"
-      variant="standard"
-      value={inputValue}
-      onChange={inputOnChange}
-      onBlur={submitInputValue}
-      autoFocus
-      onKeyDown={onKeyDownSubmit}
+    <Input
+      getItem={props.changeItem}
+      initialValue={props.title}
+      isStretched={props.isStretched}
+      onSubmit={inputOnSubmit}
     />
   ) : (
     <span onDoubleClick={spanOnDoubleClick}>{props.title}</span>

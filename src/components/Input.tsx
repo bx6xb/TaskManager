@@ -4,6 +4,7 @@ import AddIcon from "@mui/icons-material/Add"
 
 type InputPropsType = {
   getItem: (value: string) => void
+  onSubmit?: () => void
   initialValue?: string
   isStretched?: boolean
 }
@@ -11,38 +12,46 @@ type InputPropsType = {
 export const Input = (props: InputPropsType) => {
   const [inputValue, setInputValue] = useState<string>(props.initialValue || "")
 
-  const inputOnChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
-    setInputValue(e.currentTarget.value)
+  const submitInput = () => {
+    if (inputValue.length) {
+      setInputValue("")
+      props.getItem(inputValue)
+      props.onSubmit && props.onSubmit()
+    }
   }
-  const btnOnClick = () => {
-    setInputValue("")
-    props.getItem(inputValue)
+  const inputOnChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setInputValue(e.currentTarget.value)
   }
   const onKeyDownSubmit = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
-      setInputValue("")
-      props.getItem(inputValue)
+      submitInput()
     }
   }
 
-  const inputStyles = props.isStretched
+  // styles
+  const textFieldStyles = props.isStretched
     ? {
-        sx: { width: "100%" },
+        sx: { flexGrow: 1 },
       }
     : {}
 
   return (
-    <div style={{ display: "flex", alignContent: "center" }}>
+    <div
+      style={{ display: "flex", alignContent: "center", flexWrap: "wrap" }}
+      onBlur={props.onSubmit}
+    >
       <TextField
         id="standard-basic"
         variant="standard"
         value={inputValue}
-        onChange={inputOnChangeHandler}
+        onChange={inputOnChange}
         onKeyDown={onKeyDownSubmit}
-        {...inputStyles}
+        autoFocus
+        onBlur={submitInput}
+        {...textFieldStyles}
       />
 
-      <IconButton onClick={btnOnClick}>
+      <IconButton onClick={submitInput} sx={{ padding: "0" }}>
         <AddIcon />
       </IconButton>
     </div>

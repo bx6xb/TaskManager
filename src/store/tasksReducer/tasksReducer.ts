@@ -186,6 +186,7 @@ export const updateTaskTC =
       }
 
       const response = await tasksAPI.updateTask(todolistId, taskId, data)
+
       if (response.data.resultCode === 0) {
         dispatch(updateTaskAC(todolistId, taskId, data))
         dispatch(setTaskStatusAC(todolistId, taskId, "succeeded"))
