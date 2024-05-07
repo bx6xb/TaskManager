@@ -3,15 +3,16 @@ import Box from "@mui/material/Box"
 import Toolbar from "@mui/material/Toolbar"
 import Typography from "@mui/material/Typography"
 import Button from "@mui/material/Button"
-import { useAppDispatch, useAppSelector } from "../store/store"
-import { logoutTC } from "../store/loginReducer/loginReducer"
+import { memo } from "react"
 
-export const Header = () => {
-  const isAuthorized = useAppSelector((state) => state.login.isAuthorized)
-  const dispatch = useAppDispatch()
+type HeaderPropsType = {
+  isAuthorized: boolean
+  logout: () => void
+}
 
+export const Header = memo((props: HeaderPropsType) => {
   const logout = () => {
-    dispatch(logoutTC())
+    props.logout()
   }
 
   return (
@@ -21,7 +22,7 @@ export const Header = () => {
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             Todolists
           </Typography>
-          {isAuthorized && (
+          {props.isAuthorized && (
             <Button color="inherit" onClick={logout}>
               Logout
             </Button>
@@ -30,4 +31,4 @@ export const Header = () => {
       </AppBar>
     </Box>
   )
-}
+})

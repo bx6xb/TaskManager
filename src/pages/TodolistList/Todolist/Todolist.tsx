@@ -1,4 +1,4 @@
-import { useEffect } from "react"
+import { memo, useCallback, useEffect } from "react"
 import { Input } from "../../../components/Input/Input"
 import { useAppDispatch } from "../../../store/store"
 import { TaskEntityType, fetchTasksTC } from "../../../store/tasksReducer/tasksReducer"
@@ -25,7 +25,7 @@ type TodolistPropsType = {
   demo?: boolean
 }
 
-export const Todolist = (props: TodolistPropsType) => {
+export const Todolist = memo((props: TodolistPropsType) => {
   const dispatch = useAppDispatch()
 
   // fetch tasks for todolist on first init
@@ -36,27 +36,40 @@ export const Todolist = (props: TodolistPropsType) => {
   }, [])
 
   // todolist callbacks
-  const deleteTodolist = () => {
+  const deleteTodolist = useCallback(() => {
     props.deleteTodolist(props.id)
-  }
-  const updateTodolistTitle = (title: string) => {
-    if (title !== props.title) {
-      props.updateTodolistTitle(props.id, title)
-    }
-  }
-  const updateTodolistFilter = (filter: FilterType) => {
-    props.updateTodolistFilter(props.id, filter)
-  }
+  }, [props.id])
+  const updateTodolistTitle = useCallback(
+    (title: string) => {
+      if (title !== props.title) {
+        props.updateTodolistTitle(props.id, title)
+      }
+    },
+    [props.id]
+  )
+  const updateTodolistFilter = useCallback(
+    (filter: FilterType) => {
+      props.updateTodolistFilter(props.id, filter)
+    },
+    [props.id]
+  )
 
   // tasks callbacks
-  const createTask = (taskTitle: string) => {
-    props.createTask(props.id, taskTitle)
-  }
+  const createTask = useCallback(
+    (taskTitle: string) => {
+      props.createTask(props.id, taskTitle)
+    },
+    [props.id]
+  )
+
+  const buttonStyledHandler = useCallback(
+    (filter: FilterType) => {
+      return props.filter === filter ? "contained" : "outlined"
+    },
+    [props.filter]
+  )
 
   const isDisabled = props.todolistStatus === "loading"
-
-  const buttonStyledHandler = (filter: FilterType) =>
-    props.filter === filter ? "contained" : "outlined"
 
   return (
     <Paper elevation={8} sx={{ padding: "20px" }}>
@@ -112,4 +125,4 @@ export const Todolist = (props: TodolistPropsType) => {
       </div>
     </Paper>
   )
-}
+})

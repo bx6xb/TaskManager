@@ -1,5 +1,5 @@
 import { IconButton, TextField } from "@mui/material"
-import { ChangeEvent, KeyboardEvent, useState } from "react"
+import { ChangeEvent, KeyboardEvent, memo, useState } from "react"
 import AddIcon from "@mui/icons-material/Add"
 
 type InputPropsType = {
@@ -10,7 +10,7 @@ type InputPropsType = {
   label?: string
 }
 
-export const Input = (props: InputPropsType) => {
+export const Input = memo((props: InputPropsType) => {
   const [inputValue, setInputValue] = useState<string>(props.initialValue || "")
   const [isError, setIsError] = useState<boolean>(false)
 
@@ -56,4 +56,4 @@ export const Input = (props: InputPropsType) => {
       </IconButton>
     </div>
   )
-}
+})

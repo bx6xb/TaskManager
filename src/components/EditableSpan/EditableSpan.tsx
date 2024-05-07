@@ -1,4 +1,4 @@
-import { ChangeEvent, KeyboardEvent, useState } from "react"
+import { ChangeEvent, KeyboardEvent, memo, useState } from "react"
 import { TextField } from "@mui/material"
 
 type EditableSpanPropsType = {
@@ -7,7 +7,7 @@ type EditableSpanPropsType = {
   isStretched?: boolean
 }
 
-export const EditableSpan = (props: EditableSpanPropsType) => {
+export const EditableSpan = memo((props: EditableSpanPropsType) => {
   const [inputValue, setInputValue] = useState<string>(props.title)
   const [isEditMode, setIsEditMode] = useState<boolean>(false)
 
@@ -45,4 +45,4 @@ export const EditableSpan = (props: EditableSpanPropsType) => {
   ) : (
     <span onDoubleClick={spanOnDoubleClick}>{props.title}</span>
   )
-}
+})

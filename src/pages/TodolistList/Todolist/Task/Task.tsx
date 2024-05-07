@@ -1,4 +1,4 @@
-import { ChangeEvent } from "react"
+import { ChangeEvent, memo, useCallback } from "react"
 import { TaskStatuses } from "../../../../api/api"
 import { EditableSpan } from "../../../../components/EditableSpan/EditableSpan"
 import { Checkbox } from "@mui/material"
@@ -16,22 +16,28 @@ type TaskPropsType = {
   updateTaskStatus: (todolistId: string, taskId: string, status: TaskStatuses) => void
 }
 
-export const Task = (props: TaskPropsType) => {
-  const taskStatusOnChange = (e: ChangeEvent<HTMLInputElement>) => {
-    props.updateTaskStatus(
-      props.todolistId,
-      props.id,
-      e.currentTarget.checked ? TaskStatuses.Completed : TaskStatuses.New
-    )
-  }
-  const updateTaskTitle = (title: string) => {
-    if (title !== props.title) {
-      props.updateTaskTitle(props.todolistId, props.id, title)
-    }
-  }
-  const deleteTaskOnClick = () => {
+export const Task = memo((props: TaskPropsType) => {
+  const taskStatusOnChange = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      props.updateTaskStatus(
+        props.todolistId,
+        props.id,
+        e.currentTarget.checked ? TaskStatuses.Completed : TaskStatuses.New
+      )
+    },
+    [props.todolistId, props.id]
+  )
+  const updateTaskTitle = useCallback(
+    (title: string) => {
+      if (title !== props.title) {
+        props.updateTaskTitle(props.todolistId, props.id, title)
+      }
+    },
+    [props.todolistId, props.id]
+  )
+  const deleteTaskOnClick = useCallback(() => {
     props.deleteTask(props.todolistId, props.id)
-  }
+  }, [props.todolistId, props.id])
 
   const isDisabled = props.taskEntityStatus === "loading"
 
@@ -47,4 +53,4 @@ export const Task = (props: TaskPropsType) => {
       <DeleteButton onClick={deleteTaskOnClick} isDisabled={isDisabled} />
     </div>
   )
-}
+})

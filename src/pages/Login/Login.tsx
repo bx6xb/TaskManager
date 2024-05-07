@@ -1,14 +1,14 @@
 import { useFormik } from "formik"
 import { Navigate } from "react-router-dom"
 import { Button, Checkbox, FormControlLabel, Paper, TextField, Typography } from "@mui/material"
-import { FormType } from "./LoginContainer"
+import { memo } from "react"
 
 type LoginPropsType = {
   isAuthorized: boolean
   onFormSubmit: (values: FormType) => void
 }
 
-export const Login = (props: LoginPropsType) => {
+export const Login = memo((props: LoginPropsType) => {
   const formik = useFormik({
     initialValues: {
       email: "",
@@ -23,7 +23,7 @@ export const Login = (props: LoginPropsType) => {
   })
 
   if (props.isAuthorized) {
-    return <Navigate to={"/todolist-list"} />
+    return <Navigate to={"/todolists-list"} />
   }
 
   return (
@@ -71,4 +71,11 @@ export const Login = (props: LoginPropsType) => {
       </Paper>
     </div>
   )
+})
+
+// types
+export type FormType = {
+  email: string
+  password: string
+  rememberMe: boolean
 }

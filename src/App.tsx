@@ -1,25 +1,44 @@
 import { Navigate, Route, Routes } from "react-router-dom"
 import { Header } from "./layout/Header"
-import { useEffect } from "react"
+import { useCallback, useEffect } from "react"
 import { useAppDispatch, useAppSelector } from "./store/store"
 import { Preloader } from "./components/Preloader/Preloader"
 import { TodolistList } from "./pages/TodolistList/TodolistList"
-import { authTC } from "./store/loginReducer/loginReducer"
+import { authTC, loginTC, logoutTC } from "./store/loginReducer/loginReducer"
 import s from "./App.module.css"
 import { CircularProgress } from "@mui/material"
-import { SnackbarContainer } from "./components/Snackbar/SnackbarContainer"
-import { LoginContainer } from "./pages/Login/LoginContainer"
+import { Snackbar } from "./components/Snackbar/Snackbar"
+import { setErrorAC } from "./store/appReducer/appReducer"
+import { FormType, Login } from "./pages/Login/Login"
 
 function App() {
-  const isAppInitialized = useAppSelector((state) => state.app.isAppInitialized)
-  const isLoading = useAppSelector((state) => state.app.isLoading)
+  const isAuthorized = useAppSelector((state) => state.login.isAuthorized)
+  const appState = useAppSelector((state) => state.app)
   const dispatch = useAppDispatch()
 
   useEffect(() => {
     dispatch(authTC())
   }, [])
 
-  if (!isAppInitialized) {
+  // Header callback
+  const logout = useCallback(() => {
+    dispatch(logoutTC())
+  }, [dispatch])
+
+  // Snackbar callback
+  const onSnackbarClose = useCallback(() => {
+    dispatch(setErrorAC(null))
+  }, [dispatch])
+
+  // Login callback
+  const onFormSubmit = useCallback(
+    (values: FormType) => {
+      dispatch(loginTC(values))
+    },
+    [dispatch]
+  )
+
+  if (!appState.isAppInitialized) {
     return (
       <CircularProgress
         sx={{ position: "absolute", top: "30%", left: "50%", transform: "translateX(-50%)" }}
@@ -29,19 +48,22 @@ function App() {
 
   return (
     <>
-      <Header />
-      {isLoading && <Preloader />}
-      {isAppInitialized && (
+      <Header isAuthorized={isAuthorized} logout={logout} />
+      {appState.isLoading && <Preloader />}
+      {appState.isAppInitialized && (
         <div className={s.appContainer}>
           <Routes>
-            <Route path="/" element={<Navigate to={"/todolist-list"} />} />
+            <Route path="/" element={<Navigate to={"/todolists-list"} />} />
 
-            <Route path="/todolist-list" element={<TodolistList />} />
-            <Route path="/login" element={<LoginContainer />} />
+            <Route path="/todolists-list" element={<TodolistList />} />
+            <Route
+              path="/login"
+              element={<Login isAuthorized={isAuthorized} onFormSubmit={onFormSubmit} />}
+            />
           </Routes>
         </div>
       )}
-      <SnackbarContainer />
+      <Snackbar error={appState.error} onClose={onSnackbarClose} />
     </>
   )
 }

@@ -1,4 +1,4 @@
-import { useEffect } from "react"
+import { memo, useCallback, useEffect } from "react"
 import { useAppDispatch, useAppSelector } from "../../store/store"
 import {
   FilterType,
@@ -15,7 +15,7 @@ import { TaskStatuses } from "../../api/api"
 import { Todolist } from "./Todolist/Todolist"
 import { Grid } from "@mui/material"
 
-export const TodolistList = () => {
+export const TodolistList = memo(() => {
   const todolists = useAppSelector((state) => state.todolists)
   const tasks = useAppSelector((state) => state.tasks)
   const isAuthorized = useAppSelector((state) => state.login.isAuthorized)
@@ -29,32 +29,56 @@ export const TodolistList = () => {
   }, [])
 
   // todolist callbacks
-  const createTodolist = (todolistTitle: string) => {
-    dispatch(createTodolistTC(todolistTitle))
-  }
-  const deleteTodolist = (todolistId: string) => {
-    dispatch(deleteTodolistTC(todolistId))
-  }
-  const updateTodolistTitle = (todolistId: string, todolistTitle: string) => {
-    dispatch(updateTodolistTitleTC(todolistId, todolistTitle))
-  }
-  const updateTodolistFilter = (todolistId: string, filter: FilterType) => {
-    dispatch(updateTodolistFilterAC(todolistId, filter))
-  }
+  const createTodolist = useCallback(
+    (todolistTitle: string) => {
+      dispatch(createTodolistTC(todolistTitle))
+    },
+    [dispatch]
+  )
+  const deleteTodolist = useCallback(
+    (todolistId: string) => {
+      dispatch(deleteTodolistTC(todolistId))
+    },
+    [dispatch]
+  )
+  const updateTodolistTitle = useCallback(
+    (todolistId: string, todolistTitle: string) => {
+      dispatch(updateTodolistTitleTC(todolistId, todolistTitle))
+    },
+    [dispatch]
+  )
+  const updateTodolistFilter = useCallback(
+    (todolistId: string, filter: FilterType) => {
+      dispatch(updateTodolistFilterAC(todolistId, filter))
+    },
+    [dispatch]
+  )
 
   // task callbacks
-  const createTask = (todolistId: string, taskTitle: string) => {
-    dispatch(createTaskTC(todolistId, taskTitle))
-  }
-  const deleteTask = (todolistId: string, taskId: string) => {
-    dispatch(deleteTaskTC(todolistId, taskId))
-  }
-  const updateTaskTitle = (todolistId: string, taskId: string, title: string) => {
-    dispatch(updateTaskTC(todolistId, taskId, { title }))
-  }
-  const updateTaskStatus = (todolistId: string, taskId: string, status: TaskStatuses) => {
-    dispatch(updateTaskTC(todolistId, taskId, { status }))
-  }
+  const createTask = useCallback(
+    (todolistId: string, taskTitle: string) => {
+      dispatch(createTaskTC(todolistId, taskTitle))
+    },
+    [dispatch]
+  )
+  const deleteTask = useCallback(
+    (todolistId: string, taskId: string) => {
+      dispatch(deleteTaskTC(todolistId, taskId))
+    },
+    [dispatch]
+  )
+  const updateTaskTitle = useCallback(
+    (todolistId: string, taskId: string, title: string) => {
+      dispatch(updateTaskTC(todolistId, taskId, { title }))
+    },
+    [dispatch]
+  )
+  const updateTaskStatus = useCallback(
+    (todolistId: string, taskId: string, status: TaskStatuses) => {
+      dispatch(updateTaskTC(todolistId, taskId, { status }))
+    },
+    [dispatch]
+  )
 
   // redirect
   if (!isAuthorized) {
@@ -98,4 +122,4 @@ export const TodolistList = () => {
       </Grid>
     </>
   )
-}
+})

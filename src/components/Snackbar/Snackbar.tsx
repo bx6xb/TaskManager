@@ -1,12 +1,13 @@
 import SnackbarUI from "@mui/material/Snackbar"
 import Alert from "@mui/material/Alert"
+import { memo } from "react"
 
 type SnackbarPropsType = {
   error: string | null
   onClose: () => void
 }
 
-export const Snackbar = (props: SnackbarPropsType) => {
+export const Snackbar = memo((props: SnackbarPropsType) => {
   const isOpen = props.error !== null
 
   const onClose = () => {
@@ -20,4 +21,4 @@ export const Snackbar = (props: SnackbarPropsType) => {
       </Alert>
     </SnackbarUI>
   )
-}
+})
