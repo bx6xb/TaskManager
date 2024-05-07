@@ -21,6 +21,9 @@ export const TodolistBaseExample = () => {
   const deleteTodolist = () => {
     callback("Todolist was deleted")()
   }
+  const updateTodolistFilter = () => {
+    callback("Todolist filter was updated")()
+  }
 
   // tasks callbacks
   const createTask = () => {
@@ -49,6 +52,8 @@ export const TodolistBaseExample = () => {
       updateTaskStatus={updateTaskStatus}
       updateTaskTitle={updateTaskTitle}
       tasks={[] as TaskEntityType[]}
+      updateTodolistFilter={updateTodolistFilter}
+      filter="all"
     />
   )
 }

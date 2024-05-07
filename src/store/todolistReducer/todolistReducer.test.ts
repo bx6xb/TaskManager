@@ -1,10 +1,12 @@
 import { TododlistDomainType } from "../../api/api"
 import {
   EntityStatusType,
+  FilterType,
   TodolistEntityType,
   createTodolistAC,
   deleteTodolistAC,
-  setTodolistStatusAC,
+  updateTodolistFilterAC,
+  updateTodolistStatusAC,
   setTodolistsAC,
   todolistReducer,
   updateTodolistTitleAC,
@@ -81,7 +83,19 @@ test("todolist title should be updated", () => {
 })
 test("todolist status should be changed", () => {
   const newStatus: EntityStatusType = "loading"
-  const newState = todolistReducer(todolistsEntity, setTodolistStatusAC("todolistId1", newStatus))
+  const newState = todolistReducer(
+    todolistsEntity,
+    updateTodolistStatusAC("todolistId1", newStatus)
+  )
 
   expect(newState[0].entityStatus).toBe(newStatus)
+})
+test("todolist filter should be changed", () => {
+  const newFilter: FilterType = "active"
+  const newState = todolistReducer(
+    todolistsEntity,
+    updateTodolistFilterAC("todolistId2", newFilter)
+  )
+
+  expect(newState[1].filter).toBe(newFilter)
 })

@@ -4,18 +4,20 @@ import { useAppDispatch } from "../../../store/store"
 import { TaskEntityType, fetchTasksTC } from "../../../store/tasksReducer/tasksReducer"
 import { TaskStatuses } from "../../../api/api"
 import { Task } from "./Task/Task"
-import { Paper } from "@mui/material"
+import { Button, Paper } from "@mui/material"
 import { DeleteButton } from "../../../components/DeleteButton/DeleteButton"
 import { EditableSpan } from "../../../components/EditableSpan/EditableSpan"
-import { EntityStatusType } from "../../../store/todolistReducer/todolistReducer"
+import { EntityStatusType, FilterType } from "../../../store/todolistReducer/todolistReducer"
 
 type TodolistPropsType = {
   id: string
   title: string
   todolistStatus: EntityStatusType
+  filter: FilterType
   tasks: TaskEntityType[]
   deleteTodolist: (todolistId: string) => void
   updateTodolistTitle: (todolistId: string, todolistTitle: string) => void
+  updateTodolistFilter: (todolistId: string, filter: FilterType) => void
   createTask: (todolistId: string, taskTitle: string) => void
   deleteTask: (todolistId: string, taskId: string) => void
   updateTaskTitle: (todolistId: string, taskId: string, title: string) => void
@@ -33,9 +35,7 @@ export const Todolist = (props: TodolistPropsType) => {
     }
   }, [])
 
-  const createTask = (taskTitle: string) => {
-    props.createTask(props.id, taskTitle)
-  }
+  // todolist callbacks
   const deleteTodolist = () => {
     props.deleteTodolist(props.id)
   }
@@ -44,8 +44,19 @@ export const Todolist = (props: TodolistPropsType) => {
       props.updateTodolistTitle(props.id, title)
     }
   }
+  const updateTodolistFilter = (filter: FilterType) => {
+    props.updateTodolistFilter(props.id, filter)
+  }
+
+  // tasks callbacks
+  const createTask = (taskTitle: string) => {
+    props.createTask(props.id, taskTitle)
+  }
 
   const isDisabled = props.todolistStatus === "loading"
+
+  const buttonStyledHandler = (filter: FilterType) =>
+    props.filter === filter ? "contained" : "outlined"
 
   return (
     <Paper elevation={8} sx={{ padding: "20px" }}>
@@ -55,7 +66,7 @@ export const Todolist = (props: TodolistPropsType) => {
       </h3>
 
       <div style={{ marginBottom: "10px" }}>
-        <Input getItem={createTask} isStretched />
+        <Input getItem={createTask} isStretched label="Add task" />
       </div>
 
       {props.tasks.length ? (
@@ -75,6 +86,30 @@ export const Todolist = (props: TodolistPropsType) => {
       ) : (
         <h3>No tasks...</h3>
       )}
+
+      <div style={{ display: "flex", gap: "10px", marginTop: "10px" }}>
+        <Button
+          variant={buttonStyledHandler("all")}
+          color="primary"
+          onClick={() => updateTodolistFilter("all")}
+        >
+          All
+        </Button>
+        <Button
+          variant={buttonStyledHandler("completed")}
+          color="secondary"
+          onClick={() => updateTodolistFilter("completed")}
+        >
+          Completed
+        </Button>
+        <Button
+          variant={buttonStyledHandler("active")}
+          color="warning"
+          onClick={() => updateTodolistFilter("active")}
+        >
+          Active
+        </Button>
+      </div>
     </Paper>
   )
 }

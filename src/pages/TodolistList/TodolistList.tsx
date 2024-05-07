@@ -1,9 +1,11 @@
 import { useEffect } from "react"
 import { useAppDispatch, useAppSelector } from "../../store/store"
 import {
+  FilterType,
   createTodolistTC,
   deleteTodolistTC,
   fetchTodolistsTC,
+  updateTodolistFilterAC,
   updateTodolistTitleTC,
 } from "../../store/todolistReducer/todolistReducer"
 import { Navigate } from "react-router-dom"
@@ -36,6 +38,9 @@ export const TodolistList = () => {
   const updateTodolistTitle = (todolistId: string, todolistTitle: string) => {
     dispatch(updateTodolistTitleTC(todolistId, todolistTitle))
   }
+  const updateTodolistFilter = (todolistId: string, filter: FilterType) => {
+    dispatch(updateTodolistFilterAC(todolistId, filter))
+  }
 
   // task callbacks
   const createTask = (todolistId: string, taskTitle: string) => {
@@ -58,7 +63,7 @@ export const TodolistList = () => {
 
   return (
     <>
-      <Input getItem={createTodolist} />
+      <Input getItem={createTodolist} label="Add todolist" />
 
       <Grid container spacing={4} sx={{ marginTop: "10px" }} justifyContent={"center"}>
         {todolists.map((tl) => {
@@ -77,9 +82,11 @@ export const TodolistList = () => {
                 id={tl.id}
                 title={tl.title}
                 todolistStatus={tl.entityStatus}
+                filter={tl.filter}
                 tasks={filteredTasks}
                 deleteTodolist={deleteTodolist}
                 updateTodolistTitle={updateTodolistTitle}
+                updateTodolistFilter={updateTodolistFilter}
                 createTask={createTask}
                 deleteTask={deleteTask}
                 updateTaskTitle={updateTaskTitle}

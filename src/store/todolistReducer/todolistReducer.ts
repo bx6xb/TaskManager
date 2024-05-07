@@ -25,6 +25,10 @@ export const todolistReducer = (
       return state.map((tl) =>
         tl.id === action.todolistId ? { ...tl, entityStatus: action.entityStatus } : tl
       )
+    case "todolist/SET_TODOLIST_FILTER":
+      return state.map((tl) =>
+        tl.id === action.todolistId ? { ...tl, filter: action.filter } : tl
+      )
     default:
       return state
   }
@@ -52,11 +56,17 @@ export const updateTodolistTitleAC = (todolistId: string, todolistTitle: string)
     todolistId,
     todolistTitle,
   }) as const
-export const setTodolistStatusAC = (todolistId: string, entityStatus: EntityStatusType) =>
+export const updateTodolistStatusAC = (todolistId: string, entityStatus: EntityStatusType) =>
   ({
     type: "todolist/SET_TODOLIST_STATUS",
     todolistId,
     entityStatus,
+  }) as const
+export const updateTodolistFilterAC = (todolistId: string, filter: FilterType) =>
+  ({
+    type: "todolist/SET_TODOLIST_FILTER",
+    todolistId,
+    filter,
   }) as const
 
 // thunks
@@ -92,20 +102,20 @@ export const deleteTodolistTC =
   (todolistId: string): ThunkType =>
   async (dispatch) => {
     dispatch(setIsLoadingAC(true))
-    dispatch(setTodolistStatusAC(todolistId, "loading"))
+    dispatch(updateTodolistStatusAC(todolistId, "loading"))
     try {
       const response = await todolistAPI.deleteTodolist(todolistId)
       if (response.data.resultCode === 0) {
         dispatch(deleteTodolistAC(todolistId))
         dispatch(deleteTasksTodolistAC(todolistId))
-        dispatch(setTodolistStatusAC(todolistId, "succeeded"))
+        dispatch(updateTodolistStatusAC(todolistId, "succeeded"))
       } else {
         serverErrorHandler(dispatch, response.data.messages[0])
-        dispatch(setTodolistStatusAC(todolistId, "canceled"))
+        dispatch(updateTodolistStatusAC(todolistId, "canceled"))
       }
     } catch (e: any) {
       networkErrorHandler(dispatch, e.message)
-      dispatch(setTodolistStatusAC(todolistId, "canceled"))
+      dispatch(updateTodolistStatusAC(todolistId, "canceled"))
     }
     dispatch(setIsLoadingAC(false))
   }
@@ -113,19 +123,19 @@ export const updateTodolistTitleTC =
   (todolistId: string, todolistTitle: string): ThunkType =>
   async (dispatch) => {
     dispatch(setIsLoadingAC(true))
-    dispatch(setTodolistStatusAC(todolistId, "loading"))
+    dispatch(updateTodolistStatusAC(todolistId, "loading"))
     try {
       const response = await todolistAPI.updateTodolistTitle(todolistId, todolistTitle)
       if (response.data.resultCode === 0) {
         dispatch(updateTodolistTitleAC(todolistId, todolistTitle))
-        dispatch(setTodolistStatusAC(todolistId, "succeeded"))
+        dispatch(updateTodolistStatusAC(todolistId, "succeeded"))
       } else {
         serverErrorHandler(dispatch, response.data.messages[0])
-        dispatch(setTodolistStatusAC(todolistId, "canceled"))
+        dispatch(updateTodolistStatusAC(todolistId, "canceled"))
       }
     } catch (e: any) {
       networkErrorHandler(dispatch, e.message)
-      dispatch(setTodolistStatusAC(todolistId, "canceled"))
+      dispatch(updateTodolistStatusAC(todolistId, "canceled"))
     }
     dispatch(setIsLoadingAC(false))
   }
@@ -142,4 +152,5 @@ export type TodolistReducerActionType =
   | ReturnType<typeof createTodolistAC>
   | ReturnType<typeof deleteTodolistAC>
   | ReturnType<typeof updateTodolistTitleAC>
-  | ReturnType<typeof setTodolistStatusAC>
+  | ReturnType<typeof updateTodolistStatusAC>
+  | ReturnType<typeof updateTodolistFilterAC>

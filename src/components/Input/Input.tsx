@@ -7,6 +7,7 @@ type InputPropsType = {
   onSubmit?: () => void
   initialValue?: string
   isStretched?: boolean
+  label?: string
 }
 
 export const Input = (props: InputPropsType) => {
@@ -46,6 +47,7 @@ export const Input = (props: InputPropsType) => {
         onChange={inputOnChange}
         onKeyDown={onKeyDownSubmit}
         helperText={isError && "Field is required"}
+        label={props.label}
         {...styles}
       />
 

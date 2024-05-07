@@ -41,6 +41,7 @@ export const Task = (props: TaskPropsType) => {
         checked={props.taskStatus === TaskStatuses.Completed}
         onChange={taskStatusOnChange}
         disabled={isDisabled}
+        sx={{ padding: "0", marginRight: "5px" }}
       />
       <EditableSpan title={props.title} changeItem={updateTaskTitle} />
       <DeleteButton onClick={deleteTaskOnClick} isDisabled={isDisabled} />
