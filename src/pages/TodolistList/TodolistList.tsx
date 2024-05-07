@@ -89,7 +89,7 @@ export const TodolistList = memo(() => {
     <>
       <Input getItem={createTodolist} label="Add todolist" />
 
-      <Grid container spacing={4} sx={{ marginTop: "10px" }} justifyContent={"center"}>
+      <Grid container spacing={4} sx={{ marginTop: "10px" }}>
         {todolists.map((tl) => {
           let filteredTasks = tasks[tl.id]
 
@@ -101,7 +101,7 @@ export const TodolistList = memo(() => {
           }
 
           return (
-            <Grid item md={4} lg={4} xl={3} key={tl.id}>
+            <Grid item key={tl.id}>
               <Todolist
                 id={tl.id}
                 title={tl.title}
