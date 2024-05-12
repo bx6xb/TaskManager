@@ -48,7 +48,7 @@ const todolistsEntity: TodolistEntityType[] = [
 
 // tests
 test("todolists should be set", () => {
-  const newState = todolistReducer([], setTodolistsAC(todolistsDomain))
+  const newState = todolistReducer([], setTodolistsAC({ todolists: todolistsDomain }))
 
   expect(newState.length).toBe(2)
   expect(newState.every((tl) => tl.filter == "all")).toBeTruthy()
@@ -61,13 +61,13 @@ test("todolist should be created", () => {
     title: "What to visit",
   }
 
-  const newState = todolistReducer(todolistsEntity, createTodolistAC(newTodolist))
+  const newState = todolistReducer(todolistsEntity, createTodolistAC({ todolist: newTodolist }))
 
   expect(newState.length).toBe(3)
   expect(newState[0].id).toBe("todolistId3")
 })
 test("todolist should be deleted", () => {
-  const newState = todolistReducer(todolistsEntity, deleteTodolistAC("todolistId1"))
+  const newState = todolistReducer(todolistsEntity, deleteTodolistAC({ todolistId: "todolistId1" }))
 
   expect(newState.length).toBe(1)
   expect(newState[0].id).toBe("todolistId2")
@@ -76,7 +76,7 @@ test("todolist title should be updated", () => {
   const newTodolistTitle = "new todolist title"
   const newState = todolistReducer(
     todolistsEntity,
-    updateTodolistTitleAC("todolistId1", newTodolistTitle)
+    updateTodolistTitleAC({ todolistId: "todolistId1", todolistTitle: newTodolistTitle })
   )
 
   expect(newState[0].title).toBe(newTodolistTitle)
@@ -85,7 +85,7 @@ test("todolist status should be changed", () => {
   const newStatus: EntityStatusType = "loading"
   const newState = todolistReducer(
     todolistsEntity,
-    updateTodolistStatusAC("todolistId1", newStatus)
+    updateTodolistStatusAC({ entityStatus: newStatus, todolistId: "todolistId1" })
   )
 
   expect(newState[0].entityStatus).toBe(newStatus)
@@ -94,7 +94,7 @@ test("todolist filter should be changed", () => {
   const newFilter: FilterType = "active"
   const newState = todolistReducer(
     todolistsEntity,
-    updateTodolistFilterAC("todolistId2", newFilter)
+    updateTodolistFilterAC({ todolistId: "todolistId2", filter: newFilter })
   )
 
   expect(newState[1].filter).toBe(newFilter)

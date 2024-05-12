@@ -1,6 +1,8 @@
-import { LoginStateType, loginReducer, setIsAuthorizedAC } from "./loginReducer"
+import { loginReducer, setIsAuthorizedAC } from "./loginReducer"
 
-let startState: LoginStateType
+let startState: {
+  isAuthorized: boolean
+}
 
 beforeEach(() => {
   startState = {
@@ -9,7 +11,7 @@ beforeEach(() => {
 })
 
 test("isAuthorized value should be changed", () => {
-  const newState = loginReducer(startState, setIsAuthorizedAC(true))
+  const newState = loginReducer(startState, setIsAuthorizedAC({ value: true }))
 
   expect(newState).not.toBe(startState)
   expect(newState.isAuthorized).toBe(true)

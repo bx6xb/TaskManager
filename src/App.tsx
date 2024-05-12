@@ -27,7 +27,7 @@ function App() {
 
   // Snackbar callback
   const onSnackbarClose = useCallback(() => {
-    dispatch(setErrorAC(null))
+    dispatch(setErrorAC({ error: null }))
   }, [dispatch])
 
   // Login callback
