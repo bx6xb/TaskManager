@@ -1,29 +1,17 @@
-import { useState } from "react"
 import { action } from "@storybook/addon-actions"
 import { Snackbar } from "./Snackbar"
 
 export default {
-  title: "Snackbar",
+  title: "Components/Snackbar",
   component: Snackbar,
+  tags: ["autodocs"],
 }
 
 const callback = action("Snackbar closed")
 
-export const SnackbarBaseExample = () => {
-  const [error, setError] = useState<string | null>(null)
-
-  const setErrorOnClick = () => {
-    setError("Some error")
-  }
-  const onClose = () => {
-    callback()
-    setError(null)
-  }
-
-  return (
-    <>
-      <button onClick={setErrorOnClick}>Set error</button>
-      <Snackbar error={error} onClose={onClose} />
-    </>
-  )
+export const SnackbarBaseExample = {
+  args: {
+    error: "Some error",
+    onClose: callback,
+  },
 }
