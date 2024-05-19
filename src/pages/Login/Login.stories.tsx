@@ -9,5 +9,5 @@ export default {
 const callback = action("Form submitted")
 
 export const LoginBaseExample = () => {
-  return <Login isAuthorized={false} onFormSubmit={callback} />
+  return <Login />
 }

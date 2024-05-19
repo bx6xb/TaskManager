@@ -4,12 +4,12 @@ import { useCallback, useEffect } from "react"
 import { useAppDispatch, useAppSelector } from "./store/store"
 import { Preloader } from "./components/Preloader/Preloader"
 import { TodolistList } from "./pages/TodolistList/TodolistList"
-import { authTC, loginTC, logoutTC } from "./store/loginReducer/loginReducer"
+import { authTC, logoutTC } from "./store/loginReducer/loginReducer"
 import s from "./App.module.css"
 import { CircularProgress } from "@mui/material"
 import { Snackbar } from "./components/Snackbar/Snackbar"
 import { setErrorAC } from "./store/appReducer/appReducer"
-import { FormType, Login } from "./pages/Login/Login"
+import { Login } from "./pages/Login/Login"
 
 function App() {
   const isAuthorized = useAppSelector((state) => state.login.isAuthorized)
@@ -30,14 +30,6 @@ function App() {
     dispatch(setErrorAC({ error: null }))
   }, [dispatch])
 
-  // Login callback
-  const onFormSubmit = useCallback(
-    (values: FormType) => {
-      dispatch(loginTC(values))
-    },
-    [dispatch]
-  )
-
   if (!appState.isAppInitialized) {
     return (
       <CircularProgress
@@ -56,10 +48,7 @@ function App() {
             <Route path="/" element={<Navigate to={"/todolists-list"} />} />
 
             <Route path="/todolists-list" element={<TodolistList />} />
-            <Route
-              path="/login"
-              element={<Login isAuthorized={isAuthorized} onFormSubmit={onFormSubmit} />}
-            />
+            <Route path="/login" element={<Login />} />
           </Routes>
         </div>
       )}

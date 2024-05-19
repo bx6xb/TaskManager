@@ -1,28 +1,37 @@
-import { useFormik } from "formik"
+import { FormikHelpers, useFormik } from "formik"
 import { Navigate } from "react-router-dom"
 import { Button, Checkbox, FormControlLabel, Paper, TextField, Typography } from "@mui/material"
 import { memo } from "react"
+import { useAppDispatch, useAppSelector } from "../../store/store"
+import { loginTC } from "../../store/loginReducer/loginReducer"
 
-type LoginPropsType = {
-  isAuthorized: boolean
-  onFormSubmit: (values: FormType) => void
-}
+export const Login = memo(() => {
+  const isAuthorized = useAppSelector((state) => state.login.isAuthorized)
+  const dispatch = useAppDispatch()
 
-export const Login = memo((props: LoginPropsType) => {
   const formik = useFormik({
     initialValues: {
       email: "",
       password: "",
       rememberMe: false,
     },
-    onSubmit: (values) => {
+    onSubmit: async (values: FormValues, formikHelpers: FormikHelpers<FormValues>) => {
       if (values.email && values.password) {
-        props.onFormSubmit(values)
+        const action = await dispatch(loginTC(values))
+
+        // check if thunk was rejected by type value
+        if (loginTC.rejected.match(action)) {
+          if (action.payload?.fieldsErrors) {
+            const error = action.payload.fieldsErrors[0]
+            console.log(error)
+            formikHelpers.setFieldError(error.field, error.error)
+          }
+        }
       }
     },
   })
 
-  if (props.isAuthorized) {
+  if (isAuthorized) {
     return <Navigate to={"/todolists-list"} />
   }
 
@@ -37,12 +46,13 @@ export const Login = memo((props: LoginPropsType) => {
             id="outlined-basic"
             label="Email"
             variant="outlined"
-            type="email"
+            // type="email"
             placeholder="email"
             name="email"
             value={formik.values.email}
             onChange={formik.handleChange}
             sx={{ marginBottom: "10px" }}
+            helperText={formik.errors.email}
           />
           <TextField
             id="outlined-basic"
@@ -74,7 +84,7 @@ export const Login = memo((props: LoginPropsType) => {
 })
 
 // types
-export type FormType = {
+export type FormValues = {
   email: string
   password: string
   rememberMe: boolean

@@ -11,7 +11,7 @@ beforeEach(() => {
 })
 
 test("isAuthorized value should be changed", () => {
-  const newState = loginReducer(startState, setIsAuthorizedAC({ value: true }))
+  const newState = loginReducer(startState, setIsAuthorizedAC({ isAuthorized: true }))
 
   expect(newState).not.toBe(startState)
   expect(newState.isAuthorized).toBe(true)

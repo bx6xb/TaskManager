@@ -31,19 +31,19 @@ export const TodolistList = memo(() => {
   // todolist callbacks
   const createTodolist = useCallback(
     (todolistTitle: string) => {
-      dispatch(createTodolistTC(todolistTitle))
+      dispatch(createTodolistTC({ todolistTitle }))
     },
     [dispatch]
   )
   const deleteTodolist = useCallback(
     (todolistId: string) => {
-      dispatch(deleteTodolistTC(todolistId))
+      dispatch(deleteTodolistTC({ todolistId }))
     },
     [dispatch]
   )
   const updateTodolistTitle = useCallback(
     (todolistId: string, todolistTitle: string) => {
-      dispatch(updateTodolistTitleTC(todolistId, todolistTitle))
+      dispatch(updateTodolistTitleTC({ todolistId, todolistTitle }))
     },
     [dispatch]
   )
@@ -57,25 +57,25 @@ export const TodolistList = memo(() => {
   // task callbacks
   const createTask = useCallback(
     (todolistId: string, taskTitle: string) => {
-      dispatch(createTaskTC(todolistId, taskTitle))
+      dispatch(createTaskTC({ todolistId, taskTitle }))
     },
     [dispatch]
   )
   const deleteTask = useCallback(
     (todolistId: string, taskId: string) => {
-      dispatch(deleteTaskTC(todolistId, taskId))
+      dispatch(deleteTaskTC({ todolistId, taskId }))
     },
     [dispatch]
   )
   const updateTaskTitle = useCallback(
     (todolistId: string, taskId: string, title: string) => {
-      dispatch(updateTaskTC(todolistId, taskId, { title }))
+      dispatch(updateTaskTC({ todolistId, taskId, dataModel: { title } }))
     },
     [dispatch]
   )
   const updateTaskStatus = useCallback(
     (todolistId: string, taskId: string, status: TaskStatuses) => {
-      dispatch(updateTaskTC(todolistId, taskId, { status }))
+      dispatch(updateTaskTC({ todolistId, taskId, dataModel: { status } }))
     },
     [dispatch]
   )

@@ -61,10 +61,11 @@ export type TododlistDomainType = {
   addedDate: string
   order: number
 }
+export type FieldsErrorsType = { field: string; error: string }
 export type ResponseType<D = {}> = {
   resultCode: number
   messages: string[]
-  fieldsErrors: string[]
+  fieldsErrors: FieldsErrorsType[]
   data: D
 }
 export type TaskDomainType = {

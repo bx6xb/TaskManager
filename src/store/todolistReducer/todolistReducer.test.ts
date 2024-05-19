@@ -3,13 +3,13 @@ import {
   EntityStatusType,
   FilterType,
   TodolistEntityType,
-  createTodolistAC,
-  deleteTodolistAC,
   updateTodolistFilterAC,
   updateTodolistStatusAC,
-  setTodolistsAC,
   todolistReducer,
-  updateTodolistTitleAC,
+  fetchTodolistsTC,
+  createTodolistTC,
+  deleteTodolistTC,
+  updateTodolistTitleTC,
 } from "./todolistReducer"
 
 export const todolistsDomain: TododlistDomainType[] = [
@@ -48,7 +48,10 @@ const todolistsEntity: TodolistEntityType[] = [
 
 // tests
 test("todolists should be set", () => {
-  const newState = todolistReducer([], setTodolistsAC({ todolists: todolistsDomain }))
+  const newState = todolistReducer(
+    [],
+    fetchTodolistsTC.fulfilled({ todolists: todolistsDomain }, "requestId")
+  )
 
   expect(newState.length).toBe(2)
   expect(newState.every((tl) => tl.filter == "all")).toBeTruthy()
@@ -61,13 +64,23 @@ test("todolist should be created", () => {
     title: "What to visit",
   }
 
-  const newState = todolistReducer(todolistsEntity, createTodolistAC({ todolist: newTodolist }))
+  const newState = todolistReducer(
+    todolistsEntity,
+    createTodolistTC.fulfilled({ todolist: newTodolist }, "requestId", {
+      todolistTitle: "What to visit",
+    })
+  )
 
   expect(newState.length).toBe(3)
   expect(newState[0].id).toBe("todolistId3")
 })
 test("todolist should be deleted", () => {
-  const newState = todolistReducer(todolistsEntity, deleteTodolistAC({ todolistId: "todolistId1" }))
+  const newState = todolistReducer(
+    todolistsEntity,
+    deleteTodolistTC.fulfilled({ todolistId: "todolistId1" }, "requestId", {
+      todolistId: "todolistId1",
+    })
+  )
 
   expect(newState.length).toBe(1)
   expect(newState[0].id).toBe("todolistId2")
@@ -76,7 +89,11 @@ test("todolist title should be updated", () => {
   const newTodolistTitle = "new todolist title"
   const newState = todolistReducer(
     todolistsEntity,
-    updateTodolistTitleAC({ todolistId: "todolistId1", todolistTitle: newTodolistTitle })
+    updateTodolistTitleTC.fulfilled(
+      { todolistId: "todolistId1", todolistTitle: newTodolistTitle },
+      "requestId",
+      { todolistId: "todolistId1", todolistTitle: newTodolistTitle }
+    )
   )
 
   expect(newState[0].title).toBe(newTodolistTitle)

@@ -12,7 +12,7 @@ type InputPropsType = {
 
 export const Input = memo((props: InputPropsType) => {
   const [inputValue, setInputValue] = useState<string>(props.initialValue || "")
-  const [isError, setIsError] = useState<boolean>(false)
+  const [isError, setError] = useState<boolean>(false)
 
   const submitInput = () => {
     if (inputValue.length) {
@@ -20,15 +20,18 @@ export const Input = memo((props: InputPropsType) => {
       props.getItem(inputValue)
       props.onSubmit && props.onSubmit()
     } else {
-      setIsError(true)
+      setError(true)
     }
   }
   const inputOnChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setIsError(false)
+    setError(false)
     setInputValue(e.currentTarget.value)
   }
   const onKeyDownSubmit = (e: KeyboardEvent<HTMLInputElement>) => {
     e.key === "Enter" && submitInput()
+  }
+  const onBlur = () => {
+    setError(false)
   }
 
   const styles = props.isStretched
@@ -48,6 +51,7 @@ export const Input = memo((props: InputPropsType) => {
         onKeyDown={onKeyDownSubmit}
         helperText={isError && "Field is required"}
         label={props.label}
+        onBlur={onBlur}
         {...styles}
       />
 

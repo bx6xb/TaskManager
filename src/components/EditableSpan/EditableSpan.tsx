@@ -10,16 +10,22 @@ type EditableSpanPropsType = {
 export const EditableSpan = memo((props: EditableSpanPropsType) => {
   const [inputValue, setInputValue] = useState<string>(props.title)
   const [isEditMode, setIsEditMode] = useState<boolean>(false)
+  const [isError, setError] = useState<boolean>(false)
 
   const submitInput = () => {
-    props.changeItem(inputValue)
-    setIsEditMode(false)
+    if (inputValue) {
+      props.changeItem(inputValue)
+      setIsEditMode(false)
+    } else {
+      setError(true)
+    }
   }
   const spanOnDoubleClick = () => {
     setIsEditMode(true)
   }
   const inputOnChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setInputValue(e.currentTarget.value)
+    setError(false)
   }
   const onKeyDownSubmit = (e: KeyboardEvent<HTMLDivElement>) => {
     e.key === "Enter" && submitInput()
@@ -39,6 +45,8 @@ export const EditableSpan = memo((props: EditableSpanPropsType) => {
       onChange={inputOnChange}
       onKeyDown={onKeyDownSubmit}
       onBlur={submitInput}
+      helperText={isError && "Field is required"}
+      error={isError}
       autoFocus
       {...styles}
     />
