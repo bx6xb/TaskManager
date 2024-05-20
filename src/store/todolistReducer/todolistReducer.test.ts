@@ -1,4 +1,5 @@
 import { TododlistDomainType } from "../../api/api"
+import { logoutTC } from "../loginReducer/loginReducer"
 import {
   EntityStatusType,
   FilterType,
@@ -115,4 +116,12 @@ test("todolist filter should be changed", () => {
   )
 
   expect(newState[1].filter).toBe(newFilter)
+})
+test("todolist state should be cleared", () => {
+  const newState = todolistReducer(
+    todolistsEntity,
+    logoutTC.fulfilled({ isAuthorized: false }, "requestId")
+  )
+
+  expect(newState).toEqual([])
 })

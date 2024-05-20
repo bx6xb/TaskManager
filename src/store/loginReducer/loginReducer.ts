@@ -1,36 +1,35 @@
-import { Dispatch, PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit"
+import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit"
 import { FieldsErrorsType, LoginDataType, authAPI } from "../../api/api"
 import { networkErrorHandler, serverErrorHandler } from "../../utils/errorHandlers"
 import { setIsAppInitializedAC, setIsLoadingAC } from "../appReducer/appReducer"
 
 // thunks
-export const authTC = createAsyncThunk("login/auth", async (payload, thunkAPI) => {
-  const { dispatch, rejectWithValue } = thunkAPI
-
-  dispatch(setIsLoadingAC({ isLoading: true }))
-  try {
-    const response = await authAPI.me()
-    if (response.data.resultCode === 0) {
-      return { isAuthorized: true }
-    } else {
-      serverErrorHandler(dispatch, response.data.messages[0])
-      return rejectWithValue(response.data.messages[0])
+export const authTC = createAsyncThunk(
+  "login/auth",
+  async (payload, { dispatch, rejectWithValue }) => {
+    dispatch(setIsLoadingAC({ isLoading: true }))
+    try {
+      const response = await authAPI.me()
+      if (response.data.resultCode === 0) {
+        return { isAuthorized: true }
+      } else {
+        serverErrorHandler(dispatch, response.data.messages[0])
+        return rejectWithValue(response.data.messages[0])
+      }
+    } catch (e: any) {
+      networkErrorHandler(dispatch, e.message)
+      return rejectWithValue(e.message)
+    } finally {
+      dispatch(setIsLoadingAC({ isLoading: false }))
+      dispatch(setIsAppInitializedAC({ isAppInitialized: true }))
     }
-  } catch (e: any) {
-    networkErrorHandler(dispatch, e.message)
-    return rejectWithValue(e.message)
-  } finally {
-    dispatch(setIsLoadingAC({ isLoading: false }))
-    dispatch(setIsAppInitializedAC({ isAppInitialized: true }))
   }
-})
+)
 export const loginTC = createAsyncThunk<
   { isAuthorized: boolean },
   LoginDataType,
   { rejectValue: { errors: string[]; fieldsErrors?: FieldsErrorsType[] } }
->("login/login", async (data: LoginDataType, thunkAPI) => {
-  const { dispatch, rejectWithValue } = thunkAPI
-
+>("login/login", async (data: LoginDataType, { dispatch, rejectWithValue }) => {
   dispatch(setIsLoadingAC({ isLoading: true }))
   try {
     const response = await authAPI.login(data)
@@ -53,22 +52,26 @@ export const loginTC = createAsyncThunk<
     dispatch(setIsLoadingAC({ isLoading: false }))
   }
 })
-export const logoutTC = createAsyncThunk("login/logout", async (payload, thunkAPI) => {
-  const { dispatch } = thunkAPI
-
-  dispatch(setIsLoadingAC({ isLoading: true }))
-  try {
-    const response = await authAPI.logout()
-    if (response.data.resultCode === 0) {
-      dispatch(setIsAuthorizedAC({ isAuthorized: false }))
-    } else {
-      serverErrorHandler(dispatch, response.data.messages[0])
+export const logoutTC = createAsyncThunk(
+  "login/logout",
+  async (payload, { dispatch, rejectWithValue }) => {
+    dispatch(setIsLoadingAC({ isLoading: true }))
+    try {
+      const response = await authAPI.logout()
+      if (response.data.resultCode === 0) {
+        return { isAuthorized: false }
+      } else {
+        serverErrorHandler(dispatch, response.data.messages[0])
+        return rejectWithValue(response.data.messages[0])
+      }
+    } catch (e: any) {
+      networkErrorHandler(dispatch, e.message)
+      return rejectWithValue(e.message)
+    } finally {
+      dispatch(setIsLoadingAC({ isLoading: false }))
     }
-  } catch (e: any) {
-    networkErrorHandler(dispatch, e.message)
   }
-  dispatch(setIsLoadingAC({ isLoading: false }))
-})
+)
 
 const slice = createSlice({
   name: "login",
@@ -89,6 +92,12 @@ const slice = createSlice({
         }
       })
       .addCase(loginTC.fulfilled, (state, action) => {
+        return {
+          ...state,
+          isAuthorized: action.payload.isAuthorized,
+        }
+      })
+      .addCase(logoutTC.fulfilled, (state, action) => {
         return {
           ...state,
           isAuthorized: action.payload.isAuthorized,

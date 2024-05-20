@@ -2,13 +2,12 @@ import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit"
 import { TododlistDomainType, todolistAPI } from "../../api/api"
 import { networkErrorHandler, serverErrorHandler } from "../../utils/errorHandlers"
 import { setIsLoadingAC } from "../appReducer/appReducer"
+import { logoutTC } from "../loginReducer/loginReducer"
 
 // thunks
 export const fetchTodolistsTC = createAsyncThunk(
   "todolist/fetchTodolists",
-  async (payload, thunkAPI) => {
-    const { dispatch, rejectWithValue } = thunkAPI
-
+  async (payload, { dispatch, rejectWithValue }) => {
     dispatch(setIsLoadingAC({ isLoading: true }))
     try {
       const response = await todolistAPI.fetchTodolists()
@@ -23,10 +22,7 @@ export const fetchTodolistsTC = createAsyncThunk(
 )
 export const createTodolistTC = createAsyncThunk(
   "todolist/createTodolist",
-  async (payload: { todolistTitle: string }, thunkAPI) => {
-    const { todolistTitle } = payload
-    const { dispatch, rejectWithValue } = thunkAPI
-
+  async ({ todolistTitle }: { todolistTitle: string }, { dispatch, rejectWithValue }) => {
     dispatch(setIsLoadingAC({ isLoading: true }))
     try {
       const response = await todolistAPI.createTodolist(todolistTitle)
@@ -46,10 +42,7 @@ export const createTodolistTC = createAsyncThunk(
 )
 export const deleteTodolistTC = createAsyncThunk(
   "todolist/deleteTodolist",
-  async (payload: { todolistId: string }, thunkAPI) => {
-    const { todolistId } = payload
-    const { dispatch, rejectWithValue } = thunkAPI
-
+  async ({ todolistId }: { todolistId: string }, { dispatch, rejectWithValue }) => {
     dispatch(setIsLoadingAC({ isLoading: true }))
     dispatch(updateTodolistStatusAC({ todolistId, entityStatus: "loading" }))
     try {
@@ -73,10 +66,10 @@ export const deleteTodolistTC = createAsyncThunk(
 )
 export const updateTodolistTitleTC = createAsyncThunk(
   "todolist/updateTodolistTitle",
-  async (payload: { todolistId: string; todolistTitle: string }, thunkAPI) => {
-    const { todolistId, todolistTitle } = payload
-    const { dispatch, rejectWithValue } = thunkAPI
-
+  async (
+    { todolistId, todolistTitle }: { todolistId: string; todolistTitle: string },
+    { dispatch, rejectWithValue }
+  ) => {
     dispatch(setIsLoadingAC({ isLoading: true }))
     dispatch(updateTodolistStatusAC({ todolistId, entityStatus: "loading" }))
     try {
@@ -142,6 +135,7 @@ const slice = createSlice({
           tl.id === action.payload.todolistId ? { ...tl, title: action.payload.todolistTitle } : tl
         )
       })
+      .addCase(logoutTC.fulfilled, () => []) // clears state
   },
 })
 

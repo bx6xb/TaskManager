@@ -1,7 +1,7 @@
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux"
 import { combineReducers } from "redux"
 import { TodolistReducerActionType, todolistReducer } from "./todolistReducer/todolistReducer"
-import { ThunkAction, ThunkDispatch, thunk } from "redux-thunk"
+import { thunk } from "redux-thunk"
 import { AppActionType, appReducer } from "./appReducer/appReducer"
 import { TasksReducerActionType, tasksReducer } from "./tasksReducer/tasksReducer"
 import { LoginReducerActionType, loginReducer } from "./loginReducer/loginReducer"
@@ -17,6 +17,7 @@ export const rootReducer = combineReducers({
 export const store = configureStore({
   reducer: rootReducer,
   middleware: (getDefaultMiddleware) => getDefaultMiddleware().prepend(thunk),
+  devTools: process.env.NODE_ENV !== "production",
 })
 
 export const useAppSelector: TypedUseSelectorHook<AppRootStateType> = useSelector
@@ -29,5 +30,4 @@ export type AppRootActionType =
   | AppActionType
   | TasksReducerActionType
   | LoginReducerActionType
-export type DispatchType = ThunkDispatch<AppRootStateType, unknown, AppRootActionType>
-export type ThunkType = ThunkAction<void, AppRootStateType, unknown, AppRootActionType>
+export type DispatchType = typeof store.dispatch

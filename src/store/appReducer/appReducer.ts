@@ -1,14 +1,12 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit"
 
-const initialState: AppStateType = {
-  error: null,
-  isAppInitialized: false,
-  isLoading: false,
-}
-
 const slice = createSlice({
   name: "app",
-  initialState,
+  initialState: {
+    error: null,
+    isAppInitialized: false,
+    isLoading: false,
+  } as AppStateType,
   reducers: {
     setIsLoadingAC(state, action: PayloadAction<{ isLoading: boolean }>) {
       state.isLoading = action.payload.isLoading

@@ -1,10 +1,10 @@
 import { TaskPriorities, TaskStatuses, UpdateTaskDataType } from "../../api/api"
+import { logoutTC } from "../loginReducer/loginReducer"
 import { EntityStatusType } from "../todolistReducer/todolistReducer"
 import {
   TaskEntityType,
   createTaskTC,
   deleteTaskTC,
-  fetchTasksTC,
   setTaskStatusAC,
   tasksReducer,
   updateTaskTC,
@@ -97,4 +97,12 @@ test("task status should be changed", () => {
   )
 
   expect(newState["todolistId1"][1].entityStatus).toBe(newStatus)
+})
+test("tasks state should be cleared", () => {
+  const newState = tasksReducer(
+    { ["todolistId1"]: tasks },
+    logoutTC.fulfilled({ isAuthorized: false }, "requestId")
+  )
+
+  expect(newState).toEqual({})
 })
