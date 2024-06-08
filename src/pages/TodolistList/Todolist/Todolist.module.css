@@ -1,0 +1,20 @@
+.title {
+  display: flex;
+  align-items: start;
+}
+.title span,
+.title input {
+  word-break: break-all;
+  flex-grow: 1;
+}
+.title button {
+  transform: translateY(-8px);
+}
+.input {
+  margin-bottom: 10px;
+}
+.buttonsWrapper {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}

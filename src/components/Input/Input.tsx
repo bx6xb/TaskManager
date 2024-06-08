@@ -1,6 +1,7 @@
 import { IconButton, TextField } from "@mui/material"
 import { ChangeEvent, KeyboardEvent, memo, useState } from "react"
 import AddIcon from "@mui/icons-material/Add"
+import s from "./Input.module.css"
 
 type InputPropsType = {
   getItem: (value: string) => void
@@ -41,7 +42,7 @@ export const Input = memo((props: InputPropsType) => {
     : {}
 
   return (
-    <div style={{ display: "flex" }}>
+    <div className={s.input}>
       <TextField
         id="standard-basic"
         variant="standard"

@@ -1,6 +1,6 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit"
 
-const slice = createSlice({
+export const slice = createSlice({
   name: "app",
   initialState: {
     error: null,
@@ -8,20 +8,20 @@ const slice = createSlice({
     isLoading: false,
   } as AppStateType,
   reducers: {
-    setIsLoadingAC(state, action: PayloadAction<{ isLoading: boolean }>) {
+    setIsLoading(state, action: PayloadAction<{ isLoading: boolean }>) {
       state.isLoading = action.payload.isLoading
     },
-    setErrorAC(state, action: PayloadAction<{ error: string | null }>) {
+    setError(state, action: PayloadAction<{ error: string | null }>) {
       state.error = action.payload.error
     },
-    setIsAppInitializedAC(state, action: PayloadAction<{ isAppInitialized: boolean }>) {
+    setIsAppInitialized(state, action: PayloadAction<{ isAppInitialized: boolean }>) {
       state.isAppInitialized = action.payload.isAppInitialized
     },
   },
 })
 
 export const appReducer = slice.reducer
-export const { setIsLoadingAC, setErrorAC, setIsAppInitializedAC } = slice.actions
+export const { setIsLoading, setError, setIsAppInitialized } = slice.actions
 
 // types
 export type AppStateType = {
@@ -29,7 +29,3 @@ export type AppStateType = {
   error: string | null
   isAppInitialized: boolean
 }
-export type AppActionType =
-  | ReturnType<typeof setIsLoadingAC>
-  | ReturnType<typeof setErrorAC>
-  | ReturnType<typeof setIsAppInitializedAC>

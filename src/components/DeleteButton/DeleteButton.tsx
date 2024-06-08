@@ -9,7 +9,11 @@ type DeleteButton = {
 
 export const DeleteButton = memo((props: DeleteButton) => {
   return (
-    <IconButton onClick={props.onClick} disabled={props.isDisabled}>
+    <IconButton
+      onClick={props.onClick}
+      disabled={props.isDisabled}
+      
+    >
       <DeleteIcon />
     </IconButton>
   )

@@ -2,12 +2,14 @@ import { FormikHelpers, useFormik } from "formik"
 import { Navigate } from "react-router-dom"
 import { Button, Checkbox, FormControlLabel, Paper, TextField, Typography } from "@mui/material"
 import { memo } from "react"
-import { useAppDispatch, useAppSelector } from "../../store/store"
-import { loginTC } from "../../store/loginReducer/loginReducer"
+import { useActions, useAppSelector } from "../../store/store"
+import { selectIsAuthorized } from "../../store/loginReducer/selectors"
+import { loginActions } from "../../store/loginReducer"
+import s from "./Login.module.css"
 
 export const Login = memo(() => {
-  const isAuthorized = useAppSelector((state) => state.login.isAuthorized)
-  const dispatch = useAppDispatch()
+  const isAuthorized = useAppSelector(selectIsAuthorized)
+  const { login } = useActions(loginActions)
 
   const formik = useFormik({
     initialValues: {
@@ -17,10 +19,10 @@ export const Login = memo(() => {
     },
     onSubmit: async (values: FormValues, formikHelpers: FormikHelpers<FormValues>) => {
       if (values.email && values.password) {
-        const action = await dispatch(loginTC(values))
+        const action = await login(values)
 
         // check if thunk was rejected by type value
-        if (loginTC.rejected.match(action)) {
+        if (login.rejected.match(action)) {
           if (action.payload?.fieldsErrors) {
             const error = action.payload.fieldsErrors[0]
             console.log(error)
@@ -36,17 +38,17 @@ export const Login = memo(() => {
   }
 
   return (
-    <div style={{ display: "flex", justifyContent: "center" }}>
+    <div className={s.loginForm}>
       <Paper sx={{ padding: "20px" }}>
         <Typography variant="h4" sx={{ textAlign: "center", marginBottom: "10px" }}>
           Login
         </Typography>
-        <form onSubmit={formik.handleSubmit} style={{ width: "200px" }}>
+        <form onSubmit={formik.handleSubmit} className={s.form}>
           <TextField
             id="outlined-basic"
             label="Email"
             variant="outlined"
-            // type="email"
+            type="email"
             placeholder="email"
             name="email"
             value={formik.values.email}

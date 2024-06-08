@@ -1,14 +1,7 @@
 import { TaskPriorities, TaskStatuses, UpdateTaskDataType } from "../../api/api"
-import { logoutTC } from "../loginReducer/loginReducer"
+import { logout } from "../loginReducer/loginReducer"
 import { EntityStatusType } from "../todolistReducer/todolistReducer"
-import {
-  TaskEntityType,
-  createTaskTC,
-  deleteTaskTC,
-  setTaskStatusAC,
-  tasksReducer,
-  updateTaskTC,
-} from "./tasksReducer"
+import { TaskEntityType, asyncActions, setTaskStatusAC, tasksReducer } from "./tasksReducer"
 
 const tasks: TaskEntityType[] = [
   {
@@ -44,10 +37,10 @@ test("task should be created", () => {
   const param = { todolistId: "todolistId1", task: tasks[0] }
   const newState = tasksReducer(
     { todolistId1: [] },
-    createTaskTC.fulfilled(param, "requestId", {
+    asyncActions.createTask.fulfilled(param, "requestId", {
       ...param,
       taskTitle: param.task.title,
-    })
+    }),
   )
 
   expect(newState["todolistId1"].length).toBe(1)
@@ -56,10 +49,14 @@ test("task should be created", () => {
 test("task should be deleted", () => {
   const newState = tasksReducer(
     { todolistId1: [tasks[1]] },
-    deleteTaskTC.fulfilled({ todolistId: "todolistId1", taskId: "taskId2" }, "requestId", {
-      todolistId: "todolistId1",
-      taskId: "taskId2",
-    })
+    asyncActions.deleteTask.fulfilled(
+      { todolistId: "todolistId1", taskId: "taskId2" },
+      "requestId",
+      {
+        todolistId: "todolistId1",
+        taskId: "taskId2",
+      },
+    ),
   )
 
   expect(newState["todolistId1"].length).toBe(0)
@@ -77,7 +74,7 @@ test("task should be updated", () => {
   const param = { todolistId: "todolistId1", taskId: "taskId2", data }
   const newState = tasksReducer(
     { todolistId1: [tasks[1]] },
-    updateTaskTC.fulfilled(param, "requestId", { ...param, dataModel: data })
+    asyncActions.updateTask.fulfilled(param, "requestId", { ...param, dataModel: data }),
   )
 
   expect(newState["todolistId1"][0].deadline).toBe("some deadline")
@@ -93,7 +90,7 @@ test("task status should be changed", () => {
     {
       todolistId1: tasks,
     },
-    setTaskStatusAC({ todolistId: "todolistId1", taskId: "taskId2", entityStatus: newStatus })
+    setTaskStatusAC({ todolistId: "todolistId1", taskId: "taskId2", entityStatus: newStatus }),
   )
 
   expect(newState["todolistId1"][1].entityStatus).toBe(newStatus)
@@ -101,7 +98,7 @@ test("task status should be changed", () => {
 test("tasks state should be cleared", () => {
   const newState = tasksReducer(
     { ["todolistId1"]: tasks },
-    logoutTC.fulfilled({ isAuthorized: false }, "requestId")
+    logout.fulfilled({ isAuthorized: false }, "requestId"),
   )
 
   expect(newState).toEqual({})

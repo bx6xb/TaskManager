@@ -1,4 +1,4 @@
-import { loginReducer, setIsAuthorizedAC } from "./loginReducer"
+import { auth, loginReducer } from "./loginReducer"
 
 let startState: {
   isAuthorized: boolean
@@ -11,7 +11,7 @@ beforeEach(() => {
 })
 
 test("isAuthorized value should be changed", () => {
-  const newState = loginReducer(startState, setIsAuthorizedAC({ isAuthorized: true }))
+  const newState = loginReducer(startState, auth.fulfilled({ isAuthorized: true }, "requestId"))
 
   expect(newState).not.toBe(startState)
   expect(newState.isAuthorized).toBe(true)

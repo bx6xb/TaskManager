@@ -5,6 +5,7 @@ type EditableSpanPropsType = {
   title: string
   changeItem: (value: string) => void
   isStretched?: boolean
+  isDisabled?: boolean
 }
 
 export const EditableSpan = memo((props: EditableSpanPropsType) => {
@@ -47,6 +48,7 @@ export const EditableSpan = memo((props: EditableSpanPropsType) => {
       onBlur={submitInput}
       helperText={isError && "Field is required"}
       error={isError}
+      disabled={props.isDisabled}
       autoFocus
       {...styles}
     />

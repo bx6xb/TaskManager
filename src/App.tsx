@@ -1,34 +1,36 @@
-import { Navigate, Route, Routes } from "react-router-dom";
-import { Header } from "./layout/Header";
-import { useCallback, useEffect } from "react";
-import { useAppDispatch, useAppSelector } from "./store/store";
-import { Preloader } from "./components/Preloader/Preloader";
-import { TodolistList } from "./pages/TodolistList/TodolistList";
-import { authTC, logoutTC } from "./store/loginReducer/loginReducer";
-import s from "./App.module.css";
-import { CircularProgress } from "@mui/material";
-import { Snackbar } from "./components/Snackbar/Snackbar";
-import { setErrorAC } from "./store/appReducer/appReducer";
-import { Login } from "./pages/Login/Login";
+import { Navigate, Route, Routes } from "react-router-dom"
+import { Header } from "./layout/Header"
+import { useCallback, useEffect } from "react"
+import { useActions, useAppSelector } from "./store/store"
+import { Preloader } from "./components/Preloader/Preloader"
+import { TodolistList } from "./pages/TodolistList/TodolistList"
+import s from "./App.module.css"
+import { CircularProgress } from "@mui/material"
+import { Snackbar } from "./components/Snackbar/Snackbar"
+import { Login } from "./pages/Login/Login"
+import { selectIsAuthorized } from "./store/loginReducer/selectors"
+import { appActions, appSelectors } from "./store/appReducer"
+import { loginActions } from "./store/loginReducer"
 
 function App() {
-  const isAuthorized = useAppSelector((state) => state.login.isAuthorized);
-  const appState = useAppSelector((state) => state.app);
-  const dispatch = useAppDispatch();
+  const isAuthorized = useAppSelector(selectIsAuthorized)
+  const appState = useAppSelector(appSelectors.selectAppState)
+  const { logout, auth } = useActions(loginActions)
+  const { setError } = useActions(appActions)
 
   useEffect(() => {
-    dispatch(authTC());
-  }, []);
+    auth()
+  }, [])
 
   // Header callback
-  const logout = useCallback(() => {
-    dispatch(logoutTC());
-  }, [dispatch]);
+  const logoutCallback = useCallback(() => {
+    logout()
+  }, [])
 
   // Snackbar callback
   const onSnackbarClose = useCallback(() => {
-    dispatch(setErrorAC({ error: null }));
-  }, [dispatch]);
+    setError({ error: null })
+  }, [])
 
   if (!appState.isAppInitialized) {
     return (
@@ -40,12 +42,12 @@ function App() {
           transform: "translateX(-50%)",
         }}
       />
-    );
+    )
   }
 
   return (
     <>
-      <Header isAuthorized={isAuthorized} logout={logout} />
+      <Header isAuthorized={isAuthorized} logout={logoutCallback} />
       {appState.isLoading && <Preloader />}
       {appState.isAppInitialized && (
         <div className={s.appContainer}>
@@ -59,7 +61,7 @@ function App() {
       )}
       <Snackbar error={appState.error} onClose={onSnackbarClose} />
     </>
-  );
+  )
 }
 
-export default App;
+export default App

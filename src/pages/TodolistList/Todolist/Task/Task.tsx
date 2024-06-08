@@ -4,6 +4,9 @@ import { EditableSpan } from "../../../../components/EditableSpan/EditableSpan"
 import { Checkbox } from "@mui/material"
 import { DeleteButton } from "../../../../components/DeleteButton/DeleteButton"
 import { EntityStatusType } from "../../../../store/todolistReducer/todolistReducer"
+import { useActions } from "../../../../store/store"
+import { tasksActions } from "../../../../store/tasksReducer"
+import s from "./Task.module.css"
 
 type TaskPropsType = {
   id: string
@@ -11,45 +14,41 @@ type TaskPropsType = {
   taskStatus: TaskStatuses
   taskEntityStatus: EntityStatusType
   todolistId: string
-  deleteTask: (todolistId: string, taskId: string) => void
-  updateTaskTitle: (todolistId: string, taskId: string, title: string) => void
-  updateTaskStatus: (todolistId: string, taskId: string, status: TaskStatuses) => void
 }
 
 export const Task = memo((props: TaskPropsType) => {
+  const { deleteTask, updateTask } = useActions(tasksActions)
+
   const taskStatusOnChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
-      props.updateTaskStatus(
-        props.todolistId,
-        props.id,
-        e.currentTarget.checked ? TaskStatuses.Completed : TaskStatuses.New
-      )
+      const status = e.currentTarget.checked ? TaskStatuses.Completed : TaskStatuses.New
+      updateTask({ todolistId: props.todolistId, taskId: props.id, dataModel: { status } })
     },
-    [props.todolistId, props.id]
+    [props.todolistId, props.id],
   )
   const updateTaskTitle = useCallback(
     (title: string) => {
       if (title !== props.title) {
-        props.updateTaskTitle(props.todolistId, props.id, title)
+        updateTask({ todolistId: props.todolistId, taskId: props.id, dataModel: { title } })
       }
     },
-    [props.todolistId, props.id]
+    [props.todolistId, props.id],
   )
   const deleteTaskOnClick = useCallback(() => {
-    props.deleteTask(props.todolistId, props.id)
+    deleteTask({ taskId: props.id, todolistId: props.todolistId })
   }, [props.todolistId, props.id])
 
   const isDisabled = props.taskEntityStatus === "loading"
 
   return (
-    <div style={{ display: "flex", alignItems: "center" }}>
+    <div className={s.task}>
       <Checkbox
         checked={props.taskStatus === TaskStatuses.Completed}
         onChange={taskStatusOnChange}
         disabled={isDisabled}
         sx={{ padding: "0", marginRight: "5px" }}
       />
-      <EditableSpan title={props.title} changeItem={updateTaskTitle} />
+      <EditableSpan title={props.title} changeItem={updateTaskTitle} isDisabled={isDisabled} />
       <DeleteButton onClick={deleteTaskOnClick} isDisabled={isDisabled} />
     </div>
   )

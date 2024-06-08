@@ -1,13 +1,15 @@
 import { memo, useCallback, useEffect } from "react"
 import { Input } from "../../../components/Input/Input"
-import { useAppDispatch } from "../../../store/store"
-import { TaskEntityType, fetchTasksTC } from "../../../store/tasksReducer/tasksReducer"
-import { TaskStatuses } from "../../../api/api"
+import { TaskEntityType } from "../../../store/tasksReducer/tasksReducer"
 import { Task } from "./Task/Task"
 import { Button, Paper } from "@mui/material"
 import { DeleteButton } from "../../../components/DeleteButton/DeleteButton"
 import { EditableSpan } from "../../../components/EditableSpan/EditableSpan"
 import { EntityStatusType, FilterType } from "../../../store/todolistReducer/todolistReducer"
+import { useActions } from "../../../store/store"
+import { tasksActions } from "../../../store/tasksReducer"
+import { todolistActions } from "../../../store/todolistReducer"
+import s from "./Todolist.module.css"
 
 type TodolistPropsType = {
   id: string
@@ -15,71 +17,77 @@ type TodolistPropsType = {
   todolistStatus: EntityStatusType
   filter: FilterType
   tasks: TaskEntityType[]
-  deleteTodolist: (todolistId: string) => void
-  updateTodolistTitle: (todolistId: string, todolistTitle: string) => void
-  updateTodolistFilter: (todolistId: string, filter: FilterType) => void
-  createTask: (todolistId: string, taskTitle: string) => void
-  deleteTask: (todolistId: string, taskId: string) => void
-  updateTaskTitle: (todolistId: string, taskId: string, title: string) => void
-  updateTaskStatus: (todolistId: string, taskId: string, status: TaskStatuses) => void
   demo?: boolean
 }
 
 export const Todolist = memo((props: TodolistPropsType) => {
-  const dispatch = useAppDispatch()
+  const { deleteTodolist, updateTodolistTitle, updateTodolistFilter } = useActions(todolistActions)
+  const { fetchTasks, createTask } = useActions(tasksActions)
 
   // fetch tasks for todolist on first init
   useEffect(() => {
     if (!props.demo) {
-      dispatch(fetchTasksTC(props.id))
+      fetchTasks(props.id)
     }
   }, [])
 
   // todolist callbacks
-  const deleteTodolist = useCallback(() => {
-    props.deleteTodolist(props.id)
+  const deleteTodolistCallback = useCallback(() => {
+    deleteTodolist(props.id)
   }, [props.id])
-  const updateTodolistTitle = useCallback(
-    (title: string) => {
-      if (title !== props.title) {
-        props.updateTodolistTitle(props.id, title)
+  const updateTodolistTitleCallback = useCallback(
+    (todolistTitle: string) => {
+      if (todolistTitle !== props.title) {
+        updateTodolistTitle({ todolistId: props.id, todolistTitle })
       }
     },
-    [props.id]
+    [props.id],
   )
-  const updateTodolistFilter = useCallback(
+  const updateTodolistFilterCallback = useCallback(
     (filter: FilterType) => {
-      props.updateTodolistFilter(props.id, filter)
+      updateTodolistFilter({ filter, todolistId: props.id })
     },
-    [props.id]
+    [props.id],
   )
 
   // tasks callbacks
-  const createTask = useCallback(
+  const createTaskCallback = useCallback(
     (taskTitle: string) => {
-      props.createTask(props.id, taskTitle)
+      createTask({ todolistId: props.id, taskTitle })
     },
-    [props.id]
+    [props.id],
   )
 
-  const buttonStyledHandler = useCallback(
+  const buttonStyleHandler = useCallback(
     (filter: FilterType) => {
       return props.filter === filter ? "contained" : "outlined"
     },
-    [props.filter]
+    [props.filter],
   )
 
   const isDisabled = props.todolistStatus === "loading"
 
+  const renderFilterButton = (filter: FilterType, color: "primary" | "secondary" | "warning") => {
+    return (
+      <Button
+        variant={buttonStyleHandler(filter)}
+        color={color}
+        onClick={() => updateTodolistFilterCallback(filter)}
+      >
+        {filter[0].toUpperCase() + filter.slice(1)}
+      </Button>
+    )
+  }
+
   return (
     <Paper elevation={8} sx={{ padding: "20px" }}>
-      <h3 style={{ wordWrap: "break-word" }}>
-        <EditableSpan changeItem={updateTodolistTitle} title={props.title} />
-        <DeleteButton onClick={deleteTodolist} isDisabled={isDisabled} />
+      <h3 className={s.title}>
+        <EditableSpan changeItem={updateTodolistTitleCallback} title={props.title} />
+        <DeleteButton onClick={deleteTodolistCallback} isDisabled={isDisabled} />
       </h3>
 
-      <div style={{ marginBottom: "10px" }}>
-        <Input getItem={createTask} isStretched label="Add task" />
+      <div className={s.input}>
+        <Input getItem={createTaskCallback} isStretched label="Add task" />
       </div>
 
       {props.tasks.length ? (
@@ -91,37 +99,16 @@ export const Todolist = memo((props: TodolistPropsType) => {
             taskStatus={t.status}
             taskEntityStatus={t.entityStatus}
             todolistId={props.id}
-            deleteTask={props.deleteTask}
-            updateTaskTitle={props.updateTaskTitle}
-            updateTaskStatus={props.updateTaskStatus}
           />
         ))
       ) : (
         <h3>No tasks...</h3>
       )}
 
-      <div style={{ display: "flex", gap: "10px", marginTop: "10px" }}>
-        <Button
-          variant={buttonStyledHandler("all")}
-          color="primary"
-          onClick={() => updateTodolistFilter("all")}
-        >
-          All
-        </Button>
-        <Button
-          variant={buttonStyledHandler("completed")}
-          color="secondary"
-          onClick={() => updateTodolistFilter("completed")}
-        >
-          Completed
-        </Button>
-        <Button
-          variant={buttonStyledHandler("active")}
-          color="warning"
-          onClick={() => updateTodolistFilter("active")}
-        >
-          Active
-        </Button>
+      <div className={s.buttonsWrapper}>
+        {renderFilterButton("all", "primary")}
+        {renderFilterButton("completed", "secondary")}
+        {renderFilterButton("active", "warning")}
       </div>
     </Paper>
   )
