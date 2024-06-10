@@ -4,8 +4,7 @@ import AddIcon from "@mui/icons-material/Add"
 import s from "./Input.module.css"
 
 type InputPropsType = {
-  getItem: (value: string) => void
-  onSubmit?: () => void
+  getItem: (value: string) => Promise<string>
   initialValue?: string
   isStretched?: boolean
   label?: string
@@ -15,11 +14,10 @@ export const Input = memo((props: InputPropsType) => {
   const [inputValue, setInputValue] = useState<string>(props.initialValue || "")
   const [isError, setError] = useState<boolean>(false)
 
-  const submitInput = () => {
+  const submitInput = async () => {
     if (inputValue.length) {
-      setInputValue("")
-      props.getItem(inputValue)
-      props.onSubmit && props.onSubmit()
+      const inputValueAfterRequest = await props.getItem(inputValue)
+      setInputValue(inputValueAfterRequest)
     } else {
       setError(true)
     }

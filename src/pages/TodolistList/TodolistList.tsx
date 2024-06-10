@@ -1,4 +1,4 @@
-import { memo, useEffect } from "react"
+import { memo, useCallback, useEffect } from "react"
 import { useActions, useAppSelector } from "../../store/store"
 import { Navigate } from "react-router-dom"
 import { Input } from "../../components/Input/Input"
@@ -23,6 +23,18 @@ export const TodolistList = memo(() => {
     }
   }, [])
 
+  const createTodolistCallback = useCallback(
+    async (value: string) => {
+      const action = await createTodolist(value)
+      if (todolistActions.createTodolist.rejected.match(action)) {
+        return action.meta.arg
+      } else {
+        return ""
+      }
+    },
+    [createTodolist, todolistActions.createTodolist],
+  )
+
   // redirect
   if (!isAuthorized) {
     return <Navigate to={"/login"} />
@@ -30,9 +42,13 @@ export const TodolistList = memo(() => {
 
   return (
     <>
-      <Input getItem={createTodolist} label="Add todolist" />
+      <Input getItem={createTodolistCallback} label="Add todolist" />
 
-      <Grid container spacing={4} sx={{ marginTop: "10px" }}>
+      <Grid
+        container
+        spacing={4}
+        sx={{ marginTop: "10px", overflowX: "scroll", flexWrap: "nowrap" }}
+      >
         {todolists.map((tl) => {
           let filteredTasks = tasks[tl.id]
 
@@ -44,7 +60,7 @@ export const TodolistList = memo(() => {
           }
 
           return (
-            <Grid item key={tl.id} xs={4}>
+            <Grid item key={tl.id} sx={{ width: "400px" }}>
               <Todolist
                 id={tl.id}
                 title={tl.title}
