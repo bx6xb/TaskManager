@@ -16,9 +16,10 @@ export const auth = createAsyncThunk(
         serverErrorHandler(dispatch, response.data.messages[0])
         return rejectWithValue(response.data.messages[0])
       }
-    } catch (e: any) {
-      networkErrorHandler(dispatch, e.message)
-      return rejectWithValue(e.message)
+    } catch (err: any) {
+      const error = err as Error
+      networkErrorHandler(dispatch, error.message)
+      return rejectWithValue(error.message)
     } finally {
       dispatch(setIsLoading({ isLoading: false }))
       dispatch(setIsAppInitialized({ isAppInitialized: true }))
@@ -42,8 +43,9 @@ export const login = createAsyncThunk<
         fieldsErrors: response.data.fieldsErrors,
       })
     }
-  } catch (e: any) {
-    networkErrorHandler(dispatch, e.message)
+  } catch (err: any) {
+    const error = err as Error
+    networkErrorHandler(dispatch, error.message)
     return rejectWithValue({
       errors: ["Network error"],
       fieldsErrors: undefined,
@@ -64,9 +66,10 @@ export const logout = createAsyncThunk(
         serverErrorHandler(dispatch, response.data.messages[0])
         return rejectWithValue(response.data.messages[0])
       }
-    } catch (e: any) {
-      networkErrorHandler(dispatch, e.message)
-      return rejectWithValue(e.message)
+    } catch (err: any) {
+      const error = err as Error
+      networkErrorHandler(dispatch, error.message)
+      return rejectWithValue(error.message)
     } finally {
       dispatch(setIsLoading({ isLoading: false }))
     }

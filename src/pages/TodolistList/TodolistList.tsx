@@ -21,16 +21,14 @@ export const TodolistList = memo(() => {
     if (isAuthorized) {
       fetchTodolists()
     }
-  }, [])
+  }, []) 
 
   const createTodolistCallback = useCallback(
     async (value: string) => {
       const action = await createTodolist(value)
       if (todolistActions.createTodolist.rejected.match(action)) {
-        return action.meta.arg
-      } else {
-        return ""
-      }
+        throw new Error(action.payload)
+      } 
     },
     [createTodolist, todolistActions.createTodolist],
   )

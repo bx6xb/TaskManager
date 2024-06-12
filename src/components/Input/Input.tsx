@@ -4,7 +4,7 @@ import AddIcon from "@mui/icons-material/Add"
 import s from "./Input.module.css"
 
 type InputPropsType = {
-  getItem: (value: string) => Promise<string>
+  getItem: (value: string) => void
   initialValue?: string
   isStretched?: boolean
   label?: string
@@ -12,25 +12,30 @@ type InputPropsType = {
 
 export const Input = memo((props: InputPropsType) => {
   const [inputValue, setInputValue] = useState<string>(props.initialValue || "")
-  const [isError, setError] = useState<boolean>(false)
+  const [isError, setError] = useState<string>('')
 
   const submitInput = async () => {
     if (inputValue.length) {
-      const inputValueAfterRequest = await props.getItem(inputValue)
-      setInputValue(inputValueAfterRequest)
+      try {
+        await props.getItem(inputValue)
+        setInputValue('')
+      } catch(err: any) {
+        const error = err as Error
+        setError(error.message)
+      }
     } else {
-      setError(true)
+      setError("Field is required")
     }
   }
   const inputOnChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setError(false)
+    setError('')
     setInputValue(e.currentTarget.value)
   }
   const onKeyDownSubmit = (e: KeyboardEvent<HTMLInputElement>) => {
     e.key === "Enter" && submitInput()
   }
   const onBlur = () => {
-    setError(false)
+    setError('')
   }
 
   const styles = props.isStretched
@@ -44,11 +49,11 @@ export const Input = memo((props: InputPropsType) => {
       <TextField
         id="standard-basic"
         variant="standard"
-        error={isError}
+        error={!!isError}
         value={inputValue}
         onChange={inputOnChange}
         onKeyDown={onKeyDownSubmit}
-        helperText={isError && "Field is required"}
+        helperText={isError}
         label={props.label}
         onBlur={onBlur}
         {...styles}

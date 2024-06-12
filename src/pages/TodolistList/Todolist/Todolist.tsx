@@ -55,10 +55,8 @@ export const Todolist = memo((props: TodolistPropsType) => {
     async (taskTitle: string) => {
       const action = await createTask({ todolistId: props.id, taskTitle })
       if (tasksActions.createTask.rejected.match(action)) {
-        return action.meta.arg.taskTitle
-      } else {
-        return ""
-      }
+        throw new Error(action.payload)
+      } 
     },
     [props.id],
   )

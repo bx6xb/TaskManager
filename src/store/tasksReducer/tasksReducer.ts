@@ -21,18 +21,19 @@ export const fetchTasks = createAsyncThunk(
         serverErrorHandler(dispatch, response.data.error)
         return rejectWithValue(response.data.error)
       }
-    } catch (e: any) {
-      networkErrorHandler(dispatch, e.message)
-      return rejectWithValue(e.message)
+    } catch (err: any) {
+      const error = err as Error
+      networkErrorHandler(dispatch, error.message)
+      return rejectWithValue(error.message)
     } finally {
       dispatch(setIsLoading({ isLoading: false }))
     }
   },
 )
-export const createTask = createAsyncThunk(
+export const createTask = createAsyncThunk<{todolistId: string, task: TaskDomainType}, { todolistId: string; taskTitle: string }, {rejectValue: string}>(
   "tasks/createTask",
   async (
-    { todolistId, taskTitle }: { todolistId: string; taskTitle: string },
+    { todolistId, taskTitle } ,
     { dispatch, rejectWithValue },
   ) => {
     dispatch(setIsLoading({ isLoading: true }))
@@ -44,9 +45,10 @@ export const createTask = createAsyncThunk(
         serverErrorHandler(dispatch, response.data.messages[0])
         return rejectWithValue(response.data.messages[0])
       }
-    } catch (e: any) {
-      networkErrorHandler(dispatch, e.message)
-      return rejectWithValue(e.message)
+    } catch (err: any) {
+      const error = err as Error
+      networkErrorHandler(dispatch, error.message)
+      return rejectWithValue(error.message)
     } finally {
       dispatch(setIsLoading({ isLoading: false }))
     }
@@ -70,10 +72,11 @@ export const deleteTask = createAsyncThunk(
         dispatch(setTaskStatusAC({ todolistId, taskId, entityStatus: "canceled" }))
         return rejectWithValue(response.data.messages[0])
       }
-    } catch (e: any) {
-      networkErrorHandler(dispatch, e.message)
+    } catch (err: any) {
+      const error = err as Error
+      networkErrorHandler(dispatch, error.message)
       dispatch(setTaskStatusAC({ todolistId, taskId, entityStatus: "canceled" }))
-      return rejectWithValue(e.message)
+      return rejectWithValue(error.message)
     } finally {
       dispatch(setIsLoading({ isLoading: false }))
     }
@@ -111,10 +114,11 @@ export const updateTask = createAsyncThunk<
         dispatch(setTaskStatusAC({ todolistId, taskId, entityStatus: "canceled" }))
         return rejectWithValue(response.data.messages[0])
       }
-    } catch (e: any) {
-      networkErrorHandler(dispatch, e.message)
+    } catch (err: any) {
+      const error = err as Error
+      networkErrorHandler(dispatch, error.message)
       dispatch(setTaskStatusAC({ todolistId, taskId, entityStatus: "canceled" }))
-      return rejectWithValue(e.message)
+      return rejectWithValue(error.message)
     } finally {
       dispatch(setIsLoading({ isLoading: false }))
     }
