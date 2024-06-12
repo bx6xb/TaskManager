@@ -46,8 +46,14 @@ export const TodolistList = memo(() => {
 
       <Grid
         container
-        spacing={4}
-        sx={{ marginTop: "10px", overflowX: "scroll", flexWrap: "nowrap" }}
+        spacing={2}
+        sx={{
+          margin: "10px 0 0 0",
+          overflowX: "auto",
+          flexWrap: "nowrap",
+          padding: "0 16px 20px 0",
+          width: "100%",
+        }}
       >
         {todolists.map((tl) => {
           let filteredTasks = tasks[tl.id]
