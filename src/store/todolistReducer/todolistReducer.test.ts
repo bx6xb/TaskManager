@@ -1,14 +1,12 @@
-import { TododlistDomainType } from "../../api/api"
+import { TododlistDomainType } from "../../api/types"
 import { logout } from "../loginReducer/loginReducer"
 import {
-  EntityStatusType,
-  FilterType,
-  TodolistEntityType,
   updateTodolistFilter,
   updateTodolistStatusAC,
   todolistReducer,
   asyncActions,
 } from "./todolistReducer"
+import { EntityStatusType, FilterType, TodolistEntityType } from "./types"
 
 export const todolistsDomain: TododlistDomainType[] = [
   {

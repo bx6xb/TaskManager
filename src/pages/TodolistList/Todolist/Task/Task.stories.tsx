@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { Task } from "./Task"
-import { TaskStatuses } from "../../../../api/api"
+import { TaskStatuses } from "../../../../api/types"
 
 export default {
   title: "Task",

@@ -1,7 +1,8 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
-import { FieldsErrorsType, LoginDataType, authAPI } from "../../api/api"
-import { networkErrorHandler, serverErrorHandler } from "../../utils/errorHandlers"
+import { authAPI } from "../../api/api"
+import { errorHandler } from "../../utils/errorHandler"
 import { setIsAppInitialized, setIsLoading } from "../appReducer/appReducer"
+import { FieldsErrorsType, LoginDataType } from "../../api/types"
 
 // thunks
 export const auth = createAsyncThunk(
@@ -13,12 +14,12 @@ export const auth = createAsyncThunk(
       if (response.data.resultCode === 0) {
         return { isAuthorized: true }
       } else {
-        serverErrorHandler(dispatch, response.data.messages[0])
+        errorHandler(dispatch, response.data.messages[0])
         return rejectWithValue(response.data.messages[0])
       }
     } catch (err: any) {
       const error = err as Error
-      networkErrorHandler(dispatch, error.message)
+      errorHandler(dispatch, error.message)
       return rejectWithValue(error.message)
     } finally {
       dispatch(setIsLoading({ isLoading: false }))
@@ -37,7 +38,7 @@ export const login = createAsyncThunk<
     if (response.data.resultCode === 0) {
       return { isAuthorized: true }
     } else {
-      serverErrorHandler(dispatch, response.data.messages[0])
+      errorHandler(dispatch, response.data.messages[0])
       return rejectWithValue({
         errors: response.data.messages,
         fieldsErrors: response.data.fieldsErrors,
@@ -45,7 +46,7 @@ export const login = createAsyncThunk<
     }
   } catch (err: any) {
     const error = err as Error
-    networkErrorHandler(dispatch, error.message)
+    errorHandler(dispatch, error.message)
     return rejectWithValue({
       errors: ["Network error"],
       fieldsErrors: undefined,
@@ -63,12 +64,12 @@ export const logout = createAsyncThunk(
       if (response.data.resultCode === 0) {
         return { isAuthorized: false }
       } else {
-        serverErrorHandler(dispatch, response.data.messages[0])
+        errorHandler(dispatch, response.data.messages[0])
         return rejectWithValue(response.data.messages[0])
       }
     } catch (err: any) {
       const error = err as Error
-      networkErrorHandler(dispatch, error.message)
+      errorHandler(dispatch, error.message)
       return rejectWithValue(error.message)
     } finally {
       dispatch(setIsLoading({ isLoading: false }))

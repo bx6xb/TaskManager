@@ -1,4 +1,5 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit"
+import { AppStateType } from "./types"
 
 export const slice = createSlice({
   name: "app",
@@ -22,10 +23,3 @@ export const slice = createSlice({
 
 export const appReducer = slice.reducer
 export const { setIsLoading, setError, setIsAppInitialized } = slice.actions
-
-// types
-export type AppStateType = {
-  isLoading: boolean
-  error: string | null
-  isAppInitialized: boolean
-}

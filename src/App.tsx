@@ -1,7 +1,6 @@
 import { Navigate, Route, Routes } from "react-router-dom"
 import { Header } from "./layout/Header"
 import { useCallback, useEffect } from "react"
-import { useActions, useAppSelector } from "./store/store"
 import { Preloader } from "./components/Preloader/Preloader"
 import { TodolistList } from "./pages/TodolistList/TodolistList"
 import s from "./App.module.css"
@@ -11,6 +10,7 @@ import { Login } from "./pages/Login/Login"
 import { selectIsAuthorized } from "./store/loginReducer/selectors"
 import { appActions, appSelectors } from "./store/appReducer"
 import { loginActions } from "./store/loginReducer"
+import { useActions, useAppSelector } from "./utils/reduxUtils"
 
 function App() {
   const isAuthorized = useAppSelector(selectIsAuthorized)

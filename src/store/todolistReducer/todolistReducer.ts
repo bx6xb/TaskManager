@@ -1,10 +1,11 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit"
-import { TododlistDomainType } from "../../api/api"
 import { logout } from "../loginReducer/loginReducer"
 import { createAsyncThunk } from "@reduxjs/toolkit"
 import { setIsLoading } from "../appReducer/appReducer"
 import { todolistAPI } from "../../api/api"
-import { networkErrorHandler, serverErrorHandler } from "../../utils/errorHandlers"
+import { errorHandler } from "../../utils/errorHandler"
+import { TododlistDomainType } from "../../api/types"
+import { EntityStatusType, FilterType, TodolistEntityType } from "./types"
 
 export const fetchTodolists = createAsyncThunk(
   "todolist/fetchTodolists",
@@ -15,34 +16,34 @@ export const fetchTodolists = createAsyncThunk(
       return { todolists: response.data }
     } catch (err: any) {
       const error = err as Error
-      networkErrorHandler(dispatch, error.message)
+      errorHandler(dispatch, error.message)
       return rejectWithValue(error.message)
     } finally {
       dispatch(setIsLoading({ isLoading: false }))
     }
   },
 )
-export const createTodolist = createAsyncThunk<{todolist: TododlistDomainType}, string, {rejectValue: string}>(
-  "todolist/createTodolist",
-  async (todolistTitle: string, { dispatch, rejectWithValue }) => {
-    dispatch(setIsLoading({ isLoading: true }))
-    try {
-      const response = await todolistAPI.createTodolist(todolistTitle)
-      if (response.data.resultCode === 0) {
-        return { todolist: response.data.data.item }
-      } else {
-        serverErrorHandler(dispatch, response.data.messages[0])
-        return rejectWithValue(response.data.messages[0])
-      }
-    } catch (err: any) {
-      const error = err as Error
-      networkErrorHandler(dispatch, error.message)
-      return rejectWithValue(error.message)
-    } finally {
-      dispatch(setIsLoading({ isLoading: false }))
+export const createTodolist = createAsyncThunk<
+  { todolist: TododlistDomainType },
+  string,
+  { rejectValue: string }
+>("todolist/createTodolist", async (todolistTitle: string, { dispatch, rejectWithValue }) => {
+  dispatch(setIsLoading({ isLoading: true }))
+  try {
+    const response = await todolistAPI.createTodolist(todolistTitle)
+    if (response.data.resultCode === 0) {
+      return { todolist: response.data.data.item }
+    } else {
+      return rejectWithValue(response.data.messages[0])
     }
-  },
-)
+  } catch (err: any) {
+    const error = err as Error
+    errorHandler(dispatch, error.message)
+    return rejectWithValue(error.message)
+  } finally {
+    dispatch(setIsLoading({ isLoading: false }))
+  }
+})
 export const deleteTodolist = createAsyncThunk(
   "todolist/deleteTodolist",
   async (todolistId: string, { dispatch, rejectWithValue }) => {
@@ -55,13 +56,13 @@ export const deleteTodolist = createAsyncThunk(
         return { todolistId }
       } else {
         dispatch(updateTodolistStatusAC({ todolistId, entityStatus: "canceled" }))
-        serverErrorHandler(dispatch, response.data.messages[0])
+        errorHandler(dispatch, response.data.messages[0])
         return rejectWithValue(response.data.messages[0])
       }
     } catch (err: any) {
       const error = err as Error
       dispatch(updateTodolistStatusAC({ todolistId, entityStatus: "canceled" }))
-      networkErrorHandler(dispatch, error.message)
+      errorHandler(dispatch, error.message)
       return rejectWithValue(error.message)
     } finally {
       dispatch(setIsLoading({ isLoading: false }))
@@ -83,13 +84,13 @@ export const updateTodolistTitle = createAsyncThunk(
         return { todolistId, todolistTitle }
       } else {
         dispatch(updateTodolistStatusAC({ todolistId, entityStatus: "canceled" }))
-        serverErrorHandler(dispatch, response.data.messages[0])
+        errorHandler(dispatch, response.data.messages[0])
         return rejectWithValue(response.data.messages[0])
       }
     } catch (err: any) {
       const error = err as Error
       dispatch(updateTodolistStatusAC({ todolistId, entityStatus: "canceled" }))
-      networkErrorHandler(dispatch, error.message)
+      errorHandler(dispatch, error.message)
       return rejectWithValue(error.message)
     } finally {
       dispatch(setIsLoading({ isLoading: false }))
@@ -150,11 +151,3 @@ export const slice = createSlice({
 
 export const todolistReducer = slice.reducer
 export const { updateTodolistFilter, updateTodolistStatusAC } = slice.actions
-
-// types
-export type FilterType = "all" | "completed" | "active"
-export type EntityStatusType = "idle" | "loading" | "succeeded" | "canceled"
-export type TodolistEntityType = {
-  filter: FilterType
-  entityStatus: EntityStatusType
-} & TododlistDomainType

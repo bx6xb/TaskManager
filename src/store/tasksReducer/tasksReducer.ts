@@ -1,13 +1,14 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit"
-import { TaskDomainType } from "../../api/api"
-import { EntityStatusType } from "../todolistReducer/todolistReducer"
 import { logout } from "../loginReducer/loginReducer"
 import { todolistActions } from "../todolistReducer"
 import { createAsyncThunk } from "@reduxjs/toolkit"
 import { setIsLoading } from "../appReducer/appReducer"
-import { UpdateTaskDataType, UpdateTaskModelType, tasksAPI } from "../../api/api"
-import { networkErrorHandler, serverErrorHandler } from "../../utils/errorHandlers"
+import { tasksAPI } from "../../api/api"
+import { errorHandler } from "../../utils/errorHandler"
 import { AppRootStateType } from "../store"
+import { TaskDomainType, UpdateTaskDataType, UpdateTaskModelType } from "../../api/types"
+import { EntityStatusType } from "../todolistReducer/types"
+import { TasksStateType } from "./types"
 
 export const fetchTasks = createAsyncThunk(
   "tasks/fetchTasks",
@@ -18,42 +19,39 @@ export const fetchTasks = createAsyncThunk(
       if (!response.data.error) {
         return { todolistId, tasks: response.data.items }
       } else {
-        serverErrorHandler(dispatch, response.data.error)
+        errorHandler(dispatch, response.data.error)
         return rejectWithValue(response.data.error)
       }
     } catch (err: any) {
       const error = err as Error
-      networkErrorHandler(dispatch, error.message)
+      errorHandler(dispatch, error.message)
       return rejectWithValue(error.message)
     } finally {
       dispatch(setIsLoading({ isLoading: false }))
     }
   },
 )
-export const createTask = createAsyncThunk<{todolistId: string, task: TaskDomainType}, { todolistId: string; taskTitle: string }, {rejectValue: string}>(
-  "tasks/createTask",
-  async (
-    { todolistId, taskTitle } ,
-    { dispatch, rejectWithValue },
-  ) => {
-    dispatch(setIsLoading({ isLoading: true }))
-    try {
-      const response = await tasksAPI.createTask(todolistId, taskTitle)
-      if (response.data.resultCode === 0) {
-        return { todolistId, task: response.data.data.item }
-      } else {
-        serverErrorHandler(dispatch, response.data.messages[0])
-        return rejectWithValue(response.data.messages[0])
-      }
-    } catch (err: any) {
-      const error = err as Error
-      networkErrorHandler(dispatch, error.message)
-      return rejectWithValue(error.message)
-    } finally {
-      dispatch(setIsLoading({ isLoading: false }))
+export const createTask = createAsyncThunk<
+  { todolistId: string; task: TaskDomainType },
+  { todolistId: string; taskTitle: string },
+  { rejectValue: string }
+>("tasks/createTask", async ({ todolistId, taskTitle }, { dispatch, rejectWithValue }) => {
+  dispatch(setIsLoading({ isLoading: true }))
+  try {
+    const response = await tasksAPI.createTask(todolistId, taskTitle)
+    if (response.data.resultCode === 0) {
+      return { todolistId, task: response.data.data.item }
+    } else {
+      return rejectWithValue(response.data.messages[0])
     }
-  },
-)
+  } catch (err: any) {
+    const error = err as Error
+    errorHandler(dispatch, error.message)
+    return rejectWithValue(error.message)
+  } finally {
+    dispatch(setIsLoading({ isLoading: false }))
+  }
+})
 export const deleteTask = createAsyncThunk(
   "tasks/deleteTask",
   async (
@@ -68,13 +66,13 @@ export const deleteTask = createAsyncThunk(
         dispatch(setTaskStatusAC({ todolistId, taskId, entityStatus: "succeeded" }))
         return { todolistId, taskId }
       } else {
-        serverErrorHandler(dispatch, response.data.messages[0])
+        errorHandler(dispatch, response.data.messages[0])
         dispatch(setTaskStatusAC({ todolistId, taskId, entityStatus: "canceled" }))
         return rejectWithValue(response.data.messages[0])
       }
     } catch (err: any) {
       const error = err as Error
-      networkErrorHandler(dispatch, error.message)
+      errorHandler(dispatch, error.message)
       dispatch(setTaskStatusAC({ todolistId, taskId, entityStatus: "canceled" }))
       return rejectWithValue(error.message)
     } finally {
@@ -110,13 +108,13 @@ export const updateTask = createAsyncThunk<
         dispatch(setTaskStatusAC({ todolistId, taskId, entityStatus: "succeeded" }))
         return { todolistId, taskId, data }
       } else {
-        serverErrorHandler(dispatch, response.data.messages[0])
+        errorHandler(dispatch, response.data.messages[0])
         dispatch(setTaskStatusAC({ todolistId, taskId, entityStatus: "canceled" }))
         return rejectWithValue(response.data.messages[0])
       }
     } catch (err: any) {
       const error = err as Error
-      networkErrorHandler(dispatch, error.message)
+      errorHandler(dispatch, error.message)
       dispatch(setTaskStatusAC({ todolistId, taskId, entityStatus: "canceled" }))
       return rejectWithValue(error.message)
     } finally {
@@ -200,11 +198,3 @@ export const slice = createSlice({
 
 export const tasksReducer = slice.reducer
 export const { setTaskStatusAC } = slice.actions
-
-// types
-export type TaskEntityType = {
-  entityStatus: EntityStatusType
-} & TaskDomainType
-export type TasksStateType = {
-  [todolistId: string]: TaskEntityType[]
-}

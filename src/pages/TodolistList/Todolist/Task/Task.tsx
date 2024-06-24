@@ -1,12 +1,12 @@
 import { ChangeEvent, memo, useCallback } from "react"
-import { TaskStatuses } from "../../../../api/api"
 import { EditableSpan } from "../../../../components/EditableSpan/EditableSpan"
 import { Checkbox } from "@mui/material"
 import { DeleteButton } from "../../../../components/DeleteButton/DeleteButton"
-import { EntityStatusType } from "../../../../store/todolistReducer/todolistReducer"
-import { useActions } from "../../../../store/store"
 import { tasksActions } from "../../../../store/tasksReducer"
 import s from "./Task.module.css"
+import { useActions } from "../../../../utils/reduxUtils"
+import { TaskStatuses } from "../../../../api/types"
+import { EntityStatusType } from "../../../../store/todolistReducer/types"
 
 type TaskPropsType = {
   id: string

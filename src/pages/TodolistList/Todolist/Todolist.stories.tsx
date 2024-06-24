@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { Todolist } from "./Todolist"
-import { TaskEntityType } from "../../../store/tasksReducer/tasksReducer"
+import { TaskEntityType } from "../../../store/tasksReducer/types"
 
 export default {
   title: "Todolist",

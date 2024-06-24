@@ -1,15 +1,15 @@
 import { memo, useCallback, useEffect } from "react"
 import { Input } from "../../../components/Input/Input"
-import { TaskEntityType } from "../../../store/tasksReducer/tasksReducer"
 import { Task } from "./Task/Task"
 import { Button, Paper } from "@mui/material"
 import { DeleteButton } from "../../../components/DeleteButton/DeleteButton"
 import { EditableSpan } from "../../../components/EditableSpan/EditableSpan"
-import { EntityStatusType, FilterType } from "../../../store/todolistReducer/todolistReducer"
-import { useActions } from "../../../store/store"
 import { tasksActions } from "../../../store/tasksReducer"
 import { todolistActions } from "../../../store/todolistReducer"
 import s from "./Todolist.module.css"
+import { useActions } from "../../../utils/reduxUtils"
+import { EntityStatusType, FilterType } from "../../../store/todolistReducer/types"
+import { TaskEntityType } from "../../../store/tasksReducer/types"
 
 type TodolistPropsType = {
   id: string
@@ -56,7 +56,7 @@ export const Todolist = memo((props: TodolistPropsType) => {
       const action = await createTask({ todolistId: props.id, taskTitle })
       if (tasksActions.createTask.rejected.match(action)) {
         throw new Error(action.payload)
-      } 
+      }
     },
     [props.id],
   )

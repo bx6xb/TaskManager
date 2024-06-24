@@ -1,7 +1,8 @@
-import { TaskPriorities, TaskStatuses, UpdateTaskDataType } from "../../api/api"
+import { TaskPriorities, TaskStatuses, UpdateTaskDataType } from "../../api/types"
 import { logout } from "../loginReducer/loginReducer"
-import { EntityStatusType } from "../todolistReducer/todolistReducer"
-import { TaskEntityType, asyncActions, setTaskStatusAC, tasksReducer } from "./tasksReducer"
+import { EntityStatusType } from "../todolistReducer/types"
+import { asyncActions, setTaskStatusAC, tasksReducer } from "./tasksReducer"
+import { TaskEntityType } from "./types"
 
 const tasks: TaskEntityType[] = [
   {

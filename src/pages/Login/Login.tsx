@@ -2,10 +2,11 @@ import { FormikHelpers, useFormik } from "formik"
 import { Navigate } from "react-router-dom"
 import { Button, Checkbox, FormControlLabel, Paper, TextField, Typography } from "@mui/material"
 import { memo } from "react"
-import { useActions, useAppSelector } from "../../store/store"
+
 import { selectIsAuthorized } from "../../store/loginReducer/selectors"
 import { loginActions } from "../../store/loginReducer"
 import s from "./Login.module.css"
+import { useActions, useAppSelector } from "../../utils/reduxUtils"
 
 export const Login = memo(() => {
   const isAuthorized = useAppSelector(selectIsAuthorized)
