@@ -14,7 +14,7 @@ import { useActions, useAppSelector } from "./utils/reduxUtils"
 
 function App() {
   const isAuthorized = useAppSelector(selectIsAuthorized)
-  const appState = useAppSelector(appSelectors.selectAppState)
+  const { isAppInitialized, error, isLoading } = useAppSelector(appSelectors.selectAppState)
   const { logout, auth } = useActions(loginActions)
   const { setError } = useActions(appActions)
 
@@ -32,7 +32,7 @@ function App() {
     setError({ error: null })
   }, [])
 
-  if (!appState.isAppInitialized) {
+  if (!isAppInitialized) {
     return (
       <CircularProgress
         sx={{
@@ -48,8 +48,8 @@ function App() {
   return (
     <>
       <Header isAuthorized={isAuthorized} logout={logoutCallback} />
-      {appState.isLoading && <Preloader />}
-      {appState.isAppInitialized && (
+      {isLoading && <Preloader />}
+      {isAppInitialized && (
         <div className={s.appContainer}>
           <Routes>
             <Route path="/" element={<Navigate to={"/todolists-list"} />} />
@@ -59,7 +59,7 @@ function App() {
           </Routes>
         </div>
       )}
-      <Snackbar error={appState.error} onClose={onSnackbarClose} />
+      <Snackbar error={error} onClose={onSnackbarClose} />
     </>
   )
 }
