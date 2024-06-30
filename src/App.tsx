@@ -1,7 +1,7 @@
 import { Navigate, Route, Routes } from "react-router-dom"
 import { Header } from "./layout/Header"
 import { useCallback, useEffect } from "react"
-import { Preloader } from "./components/Preloader/Preloader"
+import { Loading } from "./components/Loading/Loading"
 import { TodolistList } from "./pages/TodolistList/TodolistList"
 import s from "./App.module.css"
 import { CircularProgress } from "@mui/material"
@@ -48,7 +48,7 @@ function App() {
   return (
     <>
       <Header isAuthorized={isAuthorized} logout={logoutCallback} />
-      {isLoading && <Preloader />}
+      {isLoading && <Loading />}
       {isAppInitialized && (
         <div className={s.appContainer}>
           <Routes>
