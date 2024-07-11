@@ -1,21 +1,21 @@
 import { ChangeEvent, KeyboardEvent, memo, useState } from "react"
 import { TextField } from "@mui/material"
 
-type EditableSpanPropsType = {
+type EditableSpanProps = {
   title: string
-  changeItem: (value: string) => void
+  getItem: (value: string) => void
   isStretched?: boolean
   isDisabled?: boolean
 }
 
-export const EditableSpan = memo((props: EditableSpanPropsType) => {
+export const EditableSpan = memo((props: EditableSpanProps) => {
   const [inputValue, setInputValue] = useState<string>(props.title)
   const [isEditMode, setIsEditMode] = useState<boolean>(false)
   const [isError, setError] = useState<boolean>(false)
 
   const submitInput = () => {
     if (inputValue) {
-      props.changeItem(inputValue)
+      props.getItem(inputValue)
       setIsEditMode(false)
     } else {
       setError(true)
@@ -34,7 +34,7 @@ export const EditableSpan = memo((props: EditableSpanPropsType) => {
 
   const styles = props.isStretched
     ? {
-        sx: { flexGrow: 1 },
+        sx: { flexGrow: 1, width: "100%" },
       }
     : {}
 

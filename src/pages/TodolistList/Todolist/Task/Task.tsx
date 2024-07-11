@@ -48,8 +48,8 @@ export const Task = memo((props: TaskPropsType) => {
         disabled={isDisabled}
         sx={{ padding: "0", marginRight: "5px" }}
       />
-      <EditableSpan title={props.title} changeItem={updateTaskTitle} isDisabled={isDisabled} />
-      <DeleteButton onClick={deleteTaskOnClick} isDisabled={isDisabled} />
+      <EditableSpan title={props.title} getItem={updateTaskTitle} isDisabled={isDisabled} />
+      <DeleteButton onClick={deleteTaskOnClick} disabled={isDisabled} />
     </div>
   )
 })

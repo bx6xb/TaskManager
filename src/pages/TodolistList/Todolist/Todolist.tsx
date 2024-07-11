@@ -84,8 +84,8 @@ export const Todolist = memo((props: TodolistPropsType) => {
   return (
     <Paper elevation={8} sx={{ padding: "20px" }}>
       <h3 className={s.title}>
-        <EditableSpan changeItem={updateTodolistTitleCallback} title={props.title} />
-        <DeleteButton onClick={deleteTodolistCallback} isDisabled={isDisabled} />
+        <EditableSpan getItem={updateTodolistTitleCallback} title={props.title} />
+        <DeleteButton onClick={deleteTodolistCallback} disabled={isDisabled} />
       </h3>
 
       <div className={s.input}>

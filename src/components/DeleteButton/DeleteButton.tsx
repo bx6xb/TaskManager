@@ -1,19 +1,12 @@
 import { IconButton } from "@mui/material"
 import DeleteIcon from "@mui/icons-material/Delete"
-import { memo } from "react"
+import { ComponentProps, memo } from "react"
 
-type DeleteButton = {
-  onClick: () => void
-  isDisabled?: boolean
-}
+type DeleteButtonProps = ComponentProps<typeof IconButton>
 
-export const DeleteButton = memo((props: DeleteButton) => {
+export const DeleteButton = memo((props: DeleteButtonProps) => {
   return (
-    <IconButton
-      onClick={props.onClick}
-      disabled={props.isDisabled}
-      
-    >
+    <IconButton {...props}>
       <DeleteIcon />
     </IconButton>
   )

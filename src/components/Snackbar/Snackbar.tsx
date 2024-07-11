@@ -8,16 +8,14 @@ type SnackbarPropsType = {
 }
 
 export const Snackbar = memo((props: SnackbarPropsType) => {
-  const isOpen = props.error !== null
+  const { error, onClose } = props
 
-  const onClose = () => {
-    props.onClose()
-  }
+  const isOpen = !!props.error
 
   return (
     <SnackbarUI open={isOpen} autoHideDuration={3000} onClose={onClose}>
       <Alert severity="error" variant="filled" sx={{ width: "100%" }}>
-        {props.error}
+        {error}
       </Alert>
     </SnackbarUI>
   )

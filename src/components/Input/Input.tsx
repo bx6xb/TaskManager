@@ -40,7 +40,7 @@ export const Input = memo((props: InputPropsType) => {
 
   const styles = props.isStretched
     ? {
-        sx: { flexGrow: 1 },
+        sx: { flexGrow: 1, width: '100%' },
       }
     : {}
 

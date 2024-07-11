@@ -1,21 +1,25 @@
+import type { Meta, StoryObj } from "@storybook/react"
 import { Input } from "./Input"
-import { action } from "@storybook/addon-actions"
 
-export default {
+const getItem = (item: string) => alert(item)
+
+const meta: Meta<typeof Input> = {
   title: "Components/Input",
   component: Input,
-  parameters: {
-    layout: "centered",
+  args: {
+    getItem,
+    initialValue: "",
+    isStretched: false,
+    label: "Label",
   },
-  tags: ["autodocs"],
 }
 
-const getItemCallback = (value: string) => action(value)()
-const onSubmitCallback = (value: string) => action(value)()
+export default meta
+type Story = StoryObj<typeof Input>
 
-export const InputBaseExample = {
+export const InputExample: Story = {}
+export const StretchedInput: Story = {
   args: {
-    getItem: getItemCallback,
-    onSubmit: onSubmitCallback,
+    isStretched: true,
   },
 }

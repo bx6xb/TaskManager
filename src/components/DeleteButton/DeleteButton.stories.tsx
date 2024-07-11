@@ -1,20 +1,24 @@
+import type { Meta, StoryObj } from "@storybook/react"
 import { DeleteButton } from "./DeleteButton"
 import { action } from "@storybook/addon-actions"
 
-export default {
+const callback = action("Click")
+
+const meta: Meta<typeof DeleteButton> = {
   title: "Components/Delete Button",
   component: DeleteButton,
-  parameters: {
-    layout: "centered",
+  args: {
+    disabled: false,
+    onClick: callback,
   },
-  tags: ["autodocs"],
 }
 
-const callback = action("button was pressed")
+export default meta
+type Story = StoryObj<typeof DeleteButton>
 
-export const DeleteButtonExample = {
+export const DeleteButtonExample: Story = {}
+export const DisabledDeleteButton: Story = {
   args: {
-    onClick: callback,
-    isDisabled: false,
+    disabled: true,
   },
 }

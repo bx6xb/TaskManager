@@ -1,17 +1,45 @@
-import { action } from "@storybook/addon-actions"
+import type { Meta, StoryObj } from "@storybook/react"
 import { Snackbar } from "./Snackbar"
+import { useEffect, useState } from "react"
 
-export default {
+const onClose = () => alert("Snackbar hid")
+
+const meta: Meta<typeof Snackbar> = {
   title: "Components/Snackbar",
   component: Snackbar,
-  tags: ["autodocs"],
+  parameters: {
+    layout: "padded",
+  },
 }
 
-const callback = action("Snackbar closed")
+export default meta
+type Story = StoryObj<typeof Snackbar>
 
-export const SnackbarBaseExample = {
+export const SnackbarExample: Story = {
   args: {
+    onClose,
     error: "Some error",
-    onClose: callback,
+  },
+  render() {
+    const [error, setError] = useState("")
+    const [timeoutId, setTimeoutId] = useState<number>()
+
+    useEffect(() => {
+      if (error) {
+        const id = setTimeout(() => {
+          setError("")
+        }, 2000)
+        setTimeoutId(+id)
+      }
+
+      return () => clearTimeout(timeoutId)
+    }, [error])
+
+    return (
+      <>
+        <button onClick={() => setError("Some error")}>Show snackbar</button>
+        <Snackbar onClose={onClose} error={error} />
+      </>
+    )
   },
 }

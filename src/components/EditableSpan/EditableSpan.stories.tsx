@@ -1,20 +1,35 @@
+import type { Meta, StoryObj } from "@storybook/react"
 import { EditableSpan } from "./EditableSpan"
-import { action } from "@storybook/addon-actions"
 
-export default {
+const title = "Click two times to edit"
+const getItem = (item: string) => alert(item)
+
+const meta: Meta<typeof EditableSpan> = {
   title: "Components/Editable Span",
   component: EditableSpan,
-  parameters: {
-    layout: "centered",
+  args: {
+    title,
+    getItem,
+    isStretched: false,
+    isDisabled: false,
   },
-  tags: ["autodocs"],
 }
 
-const callback = (value: string) => action(value)()
+export default meta
+type Story = StoryObj<typeof EditableSpan>
 
-export const EditableSpanBaseExample = {
+export const EditableSpanExample: Story = {}
+export const DisabledEditableSpan: Story = {
   args: {
-    title: "Title",
-    changeItem: callback,
+    isDisabled: true,
+  },
+}
+export const StretchedEditableSpan: Story = {
+  render() {
+    return (
+      <div style={{ display: "flex", width: "400px" }}>
+        <EditableSpan title={title} getItem={getItem} isStretched />
+      </div>
+    )
   },
 }
