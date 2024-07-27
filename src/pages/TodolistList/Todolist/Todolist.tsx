@@ -41,7 +41,7 @@ export const Todolist = memo((props: TodolistPropsType) => {
         updateTodolistTitle({ todolistId: props.id, todolistTitle })
       }
     },
-    [props.id],
+    [props.id, props.title],
   )
   const updateTodolistFilterCallback = useCallback(
     (filter: FilterType) => {
